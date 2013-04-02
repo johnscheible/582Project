@@ -19,7 +19,9 @@
 (defn print-message [message]
   (let [decoded (decode-message (:message message))]
     (println decoded)
-    (send recv-log #(conj % %2) (Integer. decoded))))
+    (try
+      (send recv-log #(conj % %2) (Integer. decoded))
+      (catch Exception e (println "exception: " (.getMessage e))))))
 
 (defn create-server [port]
   (receive-all @(udp-socket {:port port}) print-message)
