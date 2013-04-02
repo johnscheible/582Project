@@ -52,7 +52,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String ipAddress = mIpAddressTextField.getText().toString();
-                int portNumber = Integer.parseInt(mPortNumberTextField.getText().toString());
+                try {
+                    int portNumber = Integer.parseInt(mPortNumberTextField.getText().toString());
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, e.getMessage());
+                }
                 
                 if (!SpewService.sIsRunning) {
                     Intent intent = new Intent(MainActivity.this, SpewService.class);
@@ -84,38 +88,4 @@ public class MainActivity extends Activity {
         });
     }
 
-    
-
-    /**
-     * @TODO: write this javadoc
-     */
-    public void startSpewing(View view) {
-        String ipAddress = mIpAddressTextField.getText().toString();
-        int portNumber = Integer.parseInt(mPortNumberTextField.getText().toString());
-        
-        if (!SpewService.sIsRunning) {
-            Intent intent = new Intent(this, SpewService.class);
-            intent.putExtra(SpewService.EXTRA_IP_ADDRESS, ipAddress);
-            intent.putExtra(SpewService.EXTRA_PORT_NUMBER, portNumber);
-        
-            Log.i(TAG, "Starting SpewService");
-            startService(intent);
-            
-            switchButtonToStop();
-        }
-    }
-    
-    /**
-     * @TODO: write this javadoc
-     */
-    public void stopSpewing(View view) {
-        if (SpewService.sIsRunning) {
-            Intent intent = new Intent(this, SpewService.class);
-            
-            Log.i(TAG, "Stoping SpewService");
-            stopService(intent);
-            
-            switchButtonToStart();
-        }
-    }
 }
