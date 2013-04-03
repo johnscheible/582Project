@@ -9,6 +9,7 @@
     <string name="port_label">Port Number</string>
     <string name="port_hint">What port is it listening on?</string>
     
-    <string name="button_label">Ping!</string>
+    <string name="start_button_label">Start Spewing!</string>
+    <string name="stop_button_label">Stop Spewing</string>
 
 </resources>

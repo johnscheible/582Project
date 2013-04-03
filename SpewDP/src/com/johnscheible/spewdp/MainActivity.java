@@ -1,28 +1,42 @@
 package com.johnscheible.spewdp;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends Activity {
-    private EditText mIpAddress;
-    private EditText mPortNumber;
+    private static final String TAG = "MainActivity";
+    
+    private EditText mIpAddressTextField;
+    private EditText mPortNumberTextField;
+    private Button mServiceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        mIpAddress = (EditText) findViewById(R.id.ip_address);
-        mPortNumber = (EditText) findViewById(R.id.port_number);
+        // Find all our views we need to manipulate...
+        mIpAddressTextField = (EditText) findViewById(R.id.ip_address);
+        mPortNumberTextField = (EditText) findViewById(R.id.port_number);
+        mServiceButton = (Button) findViewById(R.id.service_button);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Set up the button depending on the SpewService's state
+        if (SpewService.sIsRunning) {
+            switchButtonToStop();
+        } else {
+            switchButtonToStart();
+        }
     }
 
     @Override
@@ -32,22 +46,45 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    public void sendPing(View view) {
-        new Thread(new Runnable() {
-            public void run() {
-                /* Build a packet */
+    private void switchButtonToStart() {
+        mServiceButton.setText(R.string.start_button_label);
+        mServiceButton.setOnClickListener(new View.OnClickListener() {           
+            @Override
+            public void onClick(View v) {
+                String ipAddress = mIpAddressTextField.getText().toString();
                 try {
-                    DatagramSocket socket = new DatagramSocket();
-                    byte[] buf = new byte[256];
-                    InetAddress address = InetAddress.getByName(mIpAddress.getText().toString());
-                    int port = Integer.parseInt(mPortNumber.getText().toString());
-                    DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
-                    socket.send(packet);
-                } catch (IOException e) {
-                    Log.e("SpewDP", e.getLocalizedMessage());
+                    int portNumber = Integer.parseInt(mPortNumberTextField.getText().toString());
+                    if (!SpewService.sIsRunning) {
+                        Intent intent = new Intent(MainActivity.this, SpewService.class);
+                        intent.putExtra(SpewService.EXTRA_IP_ADDRESS, ipAddress);
+                        intent.putExtra(SpewService.EXTRA_PORT_NUMBER, portNumber);
+                    
+                        Log.i(TAG, "Starting SpewService");
+                        startService(intent);
+                        
+                        switchButtonToStop();
+                    }
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, e.getMessage());
                 }
             }
-        }).start();
+        });
+    }
+    
+    private void switchButtonToStop() {
+        mServiceButton.setText(R.string.stop_button_label);
+        mServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SpewService.sIsRunning) {
+                    Intent intent = new Intent(MainActivity.this, SpewService.class);
+                    
+                    Log.i(TAG, "Stoping SpewService");
+                    stopService(intent);
+                }
+                switchButtonToStart();
+            }
+        });
     }
 
 }
