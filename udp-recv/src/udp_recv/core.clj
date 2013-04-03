@@ -28,14 +28,21 @@
   (receive-all @(udp-socket {:port port}) print-message)
   (str "starting server on port " port))
 
+(defn seq-nums [data]
+  (map #(nth % 0) data))
+
+(defn hostname [recvd seqn]
+  (some #(when (= (nth % 0) seqn) (nth % 1)) recvd))
+
 (defn format-data [recvd]
   "Returns a string containing properly formatted data"
   (when (seq recvd)
-    (let [csv (apply str (map #(if (some #{%} recvd)
-          "1,"
-          "0,")
-        (range (inc (apply max recvd)))))]
-      (.substring csv 0 (dec (count csv))))))
+    (let [csv (apply str (map #(if (some #{%} (seq-nums recvd))
+          (str "1," (hostname recvd %) ",\n")
+          ; (str "1," + (nth @recv-log )
+          (str "0," (nth (nth recvd 0) 1) ",\n"))
+        (range (inc (apply max (seq-nums recvd))))))]
+      (.substring csv 0 (dec (dec (count csv)))))))
 
 ; For CTRL+C - stop logging and write data to file
 (.addShutdownHook (Runtime/getRuntime)
