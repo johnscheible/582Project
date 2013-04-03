@@ -19,8 +19,9 @@
 (defn print-message [message]
   (let [decoded (decode-message (:message message))]
     (println decoded)
+    (def recent message)
     (try
-      (send recv-log #(conj % %2) (Integer. decoded))
+      (send recv-log #(conj % [%2 (:host message)]) (Integer. decoded))
       (catch Exception e (println "exception: " (.getMessage e))))))
 
 (defn create-server [port]
