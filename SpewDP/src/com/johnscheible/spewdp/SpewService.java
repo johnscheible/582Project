@@ -15,6 +15,9 @@ public class SpewService extends Service {
     public static final String EXTRA_IP_ADDRESS = "com.johnscheible.spewdp.IP_ADDRESS";
     public static final String EXTRA_PORT_NUMBER = "com.johnscheible.spewdp.PORT_NUMBER";
     
+    private Thread mSpewThread;
+    private boolean mKeepRunning;
+    
     static boolean sIsRunning;
     
     public SpewService() {
@@ -30,17 +33,18 @@ public class SpewService extends Service {
         
         public void run() {
             sIsRunning = true;
-            while (true) {
+            int sequenceNumber = 0;
+            while (mKeepRunning) {
                 try {
                     // Build a packet
                     DatagramSocket socket = new DatagramSocket();
-                    byte[] buf = new byte[256];
+                    byte[] buf = String.valueOf(sequenceNumber++).getBytes();
                     InetAddress address = InetAddress
                             .getByName(mIntent.getStringExtra(EXTRA_IP_ADDRESS));
                     int port = mIntent.getIntExtra(EXTRA_PORT_NUMBER, 4738);
                     DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 
-                    Log.i(TAG, "Sending packet");
+                    Log.d(TAG, "Sending packet");
                     socket.send(packet);
                 } catch (IOException e) {
                     Log.e(TAG, e.getLocalizedMessage());
@@ -57,8 +61,17 @@ public class SpewService extends Service {
     
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        new Thread(new SpewRunner(intent)).start();
+        mKeepRunning = true;
+        mSpewThread = new Thread(new SpewRunner(intent));
+        mSpewThread.start();
         return START_REDELIVER_INTENT;
+    }
+    
+    @Override
+    public void onDestroy() {
+        sIsRunning = false;
+        mKeepRunning = false;
+        return;
     }
     
     @Override
