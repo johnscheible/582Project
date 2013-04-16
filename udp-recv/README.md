@@ -9,6 +9,6 @@ Listens for UDP packets that contain a sequence number only. Currently the seque
 
 ## Usage
 
-Run `lein trampoline run <port#>`. Press CTRL-C to terminate, and write data to 'data.csv'.
+Run `lein trampoline run <port#>`. Press CTRL-C to terminate. Output is written to 'data.csv'.
 
 FIXME
