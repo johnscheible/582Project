@@ -4,4 +4,12 @@
 
 \subsection{Limitations}
 
+Due to limited (and often nonexistant) documentation of the Android source code, we were forced to make some sacrifices. Optimally, we would have liked to modify Android's network management source directly. However, the lack of information provided by Google's Android team made writing a new application the best and most feasible option.
 
+This somewhat limited our ability to fully control the mobile device's network management policies because our software ran concurrently with Android's built-in network management. Thus, while we were able to control connectivity, it was impossible to prevent Android from making its own decisions about network connectivity.
+
+Therefore, in cases 1 and 2, our application could not \emph{prevent} connection to unsuitable WiFi networks. Instead, when such a connection occured, we detected the connection and terminated it as fast as Android's framework allows for. In case 3, Android's existing WiFi management policies did not interfere with our policies because we propose to drop connections \emph{before} Android acts.
+
+Additionally, because we only worked with Android (as the other market leader, iOS, offers no control of WiFi/cell connection handling), it is possible that our data is specific to the domain of Android mobile devices. Other systems may have different WiFi/cell connection management policies.
+
+Another limitation of our research is that 

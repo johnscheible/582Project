@@ -1,0 +1,63 @@
+1) Test WiFi-only connection strength during walk to bus stop and back
+2) Set preference to 3G. Make the same walk.
+	- If we stay connected to 3G the whole time, we have full control
+	- If not, we have to turn off WiFi when Android overrules us.
+3) Implement policies
+4) Run same tests with policies
+
+
+
+KEVIN -
+1) Get 582 stuff working! Collect data!
+2) Make a poster!
+3) Write paper!
+4) Write 376 paper!
+5) Stats final. Meh.
+6) Get a new flight, apparently....
+
+
+============================PAPER EVALUATION============================
+Grading based on "Can we":
+
+1) Identify an important problem
+	- 3 kinds of statements
+		- Cited data
+		- Demonstrated data
+		- Bullshit
+2) Convince Prabal it's important
+	- Apparently we already did this. Yay!
+3) Demonstrate an understanding of the related work
+	- Distinguish from other work
+		- Maybe show better understanding of existing Android/iOS WiFi policies
+	- Shit...
+4) Clear hypothesis
+	- Elements of hypothesis
+		- Observations
+		- Claim relating dependant and independant variables
+5) Plan and execute a reasearch project
+	- Identify key experiments/analysis
+	- Demonstrate step-by-step argument formulation
+		- Easy-to-follow set of well-supported claims.
+	- No weak links in argument chain
+6) Convey results concisely, crisply, clearly, and convincingly
+	- In 1-2 sentences
+	- Stated explicitly in the abstract, intro, and conclusion
+	- Demonstrate some shred of =======insight======= - the "nugget"
+		- Have an "a-ha!" moment
+		- We might struggle with this...
+	- Clearly
+		- Some set of "a ha" figures/tables
+		- Every caption MUST be self-sufficient and descriptive
+			- Look at his stuff about captions
+			- What is it that I'm looking at here?
+			- What does the data show?
+			- What does this imply? (i.e. why should the reader care?)
+	- Convincingly
+		- Error bounds / condience intervals
+		- STATS bro, STATS
+			- 95% confidence interval preferable
+		- Multiple trials
+		- CDFs where appropriate
+		- Validation of hypothesis
+		- Identify shortcomings
+			- When does is fail?
