@@ -6,7 +6,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -17,6 +20,7 @@ public class SpewService extends Service {
     
     private Thread mSpewThread;
     private boolean mKeepRunning;
+    private WifiManager mWifiManager;
     
     static boolean sIsRunning;
     
@@ -35,6 +39,14 @@ public class SpewService extends Service {
             sIsRunning = true;
             int sequenceNumber = 0;
             while (mKeepRunning) {
+                // Log WiFi State
+                if (mWifiManager.isWifiEnabled()) {
+                    WifiInfo wi = mWifiManager.getConnectionInfo();
+                    Log.i(TAG, "Sending packet " + sequenceNumber + ": " + wi.getRssi());
+                } else {
+                    Log.i(TAG, "Sending packet " + sequenceNumber + ": MOBILE");
+                }
+                
                 try {
                     // Build a packet
                     DatagramSocket socket = new DatagramSocket();
@@ -62,6 +74,7 @@ public class SpewService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mKeepRunning = true;
+        mWifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         mSpewThread = new Thread(new SpewRunner(intent));
         mSpewThread.start();
         return START_REDELIVER_INTENT;
