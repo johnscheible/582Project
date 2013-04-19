@@ -1,17 +1,24 @@
 package com.johnscheible.spewdp;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Date;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SpewService extends Service {
     private static final String TAG = "SpewService";
@@ -38,13 +45,48 @@ public class SpewService extends Service {
         public void run() {
             sIsRunning = true;
             int sequenceNumber = 0;
+            FileOutputStream fos = null;
+            File file = null;
+            
+            // Set up output file:
+            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                Toast.makeText(getApplicationContext(),
+                		       "Not logging WiFi Strength",
+                               Toast.LENGTH_SHORT).show();
+            } else {
+            	String fname = new Date().toString().replace(" ", "_");
+            	fname += ".txt";
+            	file = new File(getExternalFilesDir(null), fname);
+            	try {
+            		fos = new FileOutputStream(file);
+            	} catch (FileNotFoundException e) {
+            		Toast.makeText(getApplicationContext(),
+             		       "How was the file not found?",
+                            Toast.LENGTH_SHORT).show();
+            	}
+            }
+            
             while (mKeepRunning) {
-                // Log WiFi State
+                // Build message (for WiFi or mobile)
+            	String msg;
                 if (mWifiManager.isWifiEnabled()) {
                     WifiInfo wi = mWifiManager.getConnectionInfo();
-                    Log.i(TAG, "Sending packet " + sequenceNumber + ": " + wi.getRssi());
+                    msg = "Sending packet " + sequenceNumber + ": " + wi.getRssi() + "\n";
                 } else {
-                    Log.i(TAG, "Sending packet " + sequenceNumber + ": MOBILE");
+                    msg = "Sending packet " + sequenceNumber + ": MOBILE\n";
+                }
+                
+                // If we have a file, write to it otherwise show a toast
+                try {	
+                	if (fos != null) {
+                		fos.write(msg.getBytes());
+                	} else {
+                		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                	}
+                } catch (IOException e) {
+                	Toast.makeText(getApplicationContext(),
+              		               (CharSequence) ("I guesss we can't write cause FUCK YOU"),
+                                   Toast.LENGTH_SHORT).show();
                 }
                 
                 try {
@@ -67,6 +109,20 @@ public class SpewService extends Service {
                 } catch (InterruptedException e) {
                     Log.e(TAG, e.getLocalizedMessage());
                 }
+            }
+            
+            // Clean up...
+            if (fos != null && file != null) {
+            	try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            	String[] files = {file.getAbsolutePath()};
+            	MediaScannerConnection.scanFile(getApplicationContext(),
+            			                        files, 
+            			                        null,
+            			                        null);
             }
         }
     }
