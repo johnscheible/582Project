@@ -24,8 +24,9 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080003;
+        public static final int action_settings=0x7f080004;
         public static final int ip_address=0x7f080000;
+        public static final int network_preference_button=0x7f080003;
         public static final int port_number=0x7f080001;
         public static final int service_button=0x7f080002;
     }
@@ -42,6 +43,8 @@ public final class R {
         public static final int ip_label=0x7f050002;
         public static final int port_hint=0x7f050005;
         public static final int port_label=0x7f050004;
+        public static final int prefer_default_button_label=0x7f050009;
+        public static final int prefer_mobile_button_label=0x7f050008;
         public static final int start_button_label=0x7f050006;
         public static final int stop_button_label=0x7f050007;
     }

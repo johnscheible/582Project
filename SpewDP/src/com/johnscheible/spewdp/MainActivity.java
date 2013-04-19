@@ -1,7 +1,9 @@
 package com.johnscheible.spewdp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +17,8 @@ public class MainActivity extends Activity {
     private EditText mIpAddressTextField;
     private EditText mPortNumberTextField;
     private Button mServiceButton;
+    private Button mNetworkPreferenceButton;
+    private ConnectivityManager mConnectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +29,27 @@ public class MainActivity extends Activity {
         mIpAddressTextField = (EditText) findViewById(R.id.ip_address);
         mPortNumberTextField = (EditText) findViewById(R.id.port_number);
         mServiceButton = (Button) findViewById(R.id.service_button);
+        mNetworkPreferenceButton = (Button) findViewById(R.id.network_preference_button);
+        mConnectivityManager =
+        		(ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Set up the button depending on the SpewService's state
+        // Set up the service button depending on the SpewService's state
         if (SpewService.sIsRunning) {
             switchButtonToStop();
         } else {
             switchButtonToStart();
+        }
+        
+        // Set up the preference button depending on preference
+        if (mConnectivityManager.getNetworkPreference() != ConnectivityManager.TYPE_MOBILE) {
+        	switchButtonToMobile();
+        } else {
+        	switchButtonToDefault();
         }
     }
 
@@ -83,6 +97,31 @@ public class MainActivity extends Activity {
                     stopService(intent);
                 }
                 switchButtonToStart();
+            }
+        });
+    }
+    
+    private void switchButtonToMobile() {
+        mNetworkPreferenceButton.setText(R.string.prefer_mobile_button_label);
+        mNetworkPreferenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {    
+                Log.i(TAG, "Setting network preference to WiFi");
+                mConnectivityManager.setNetworkPreference(ConnectivityManager.TYPE_MOBILE);
+                switchButtonToDefault();
+            }
+        });
+    }
+    
+    private void switchButtonToDefault() {
+        mNetworkPreferenceButton.setText(R.string.prefer_default_button_label);
+        mNetworkPreferenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "Setting network preference to Default");
+                mConnectivityManager.setNetworkPreference(
+                		ConnectivityManager.DEFAULT_NETWORK_PREFERENCE);
+                switchButtonToMobile();
             }
         });
     }
