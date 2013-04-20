@@ -1,9 +1,12 @@
 package com.johnscheible.betterwifi;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ public class MainActivity extends Activity {
     //private Button mDisconnectButton;
     private WifiManager mWifiManager;
     private ConnectivityManager mConnectivityManager;
+    private int mLastNetId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,7 @@ public class MainActivity extends Activity {
     				       "Not connected to WiFi",
     				       Toast.LENGTH_SHORT).show();
     	} else {
+    		mLastNetId = mWifiManager.getConnectionInfo().getNetworkId();
     		if (!mWifiManager.disconnect()) {
     			Toast.makeText(getApplicationContext(),
  				               "Could not disconnect from WiFi",
@@ -102,7 +107,18 @@ public class MainActivity extends Activity {
     }
     
     public void onReconnectClick(View view) {
-    	if (!mWifiManager.reconnect()) {
+    	mWifiManager.enableNetwork(mLastNetId, false);
+    	
+    	List<WifiConfiguration> wifiNetworks = mWifiManager.getConfiguredNetworks();
+    	String stuff = "";
+    	for (WifiConfiguration network : wifiNetworks) {
+    		stuff += network.SSID + "\n";
+    	}
+    	Toast.makeText(getApplicationContext(),
+			       stuff,
+		           Toast.LENGTH_SHORT).show();
+    	
+    	if (!mWifiManager.reassociate()) {
     		Toast.makeText(getApplicationContext(),
 					       "Could not reconnect to WiFi",
 				           Toast.LENGTH_SHORT).show();
