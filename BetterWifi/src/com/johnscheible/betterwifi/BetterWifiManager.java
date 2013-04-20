@@ -6,7 +6,7 @@ import android.util.Log;
 
 
 public class BetterWifiManager extends Service {
-    private static final String TAG = "SpewService";
+    private static final String TAG = "BetterWifiManager";
 
     private Thread mThread;
     private boolean mKeepRunning;

@@ -1,17 +1,24 @@
 package com.johnscheible.betterwifi;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
     private Button mServiceButton;
+    //private Button mDisconnectButton;
+    private WifiManager mWifiManager;
+    private ConnectivityManager mConnectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +27,9 @@ public class MainActivity extends Activity {
 
         // Find all our views we need to manipulate...
         mServiceButton = (Button) findViewById(R.id.service_button);
+        //mDisconnectButton = (Button) findViewById(R.id.disconnect_button);
+        mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     @Override
@@ -74,5 +84,16 @@ public class MainActivity extends Activity {
             }
         });
     }
-
+    
+    public void onDisconnectClick(View view) {
+    	// If we're not connected to WiFi, let user know we can't disconnect
+    	if (mConnectivityManager.getActiveNetworkInfo().getType() !=
+    			ConnectivityManager.TYPE_WIFI) {
+    		Toast.makeText(getApplicationContext(),
+    				       "Not connected to WiFi",
+    				       Toast.LENGTH_SHORT).show();
+    	} else {
+    		mWifiManager.disconnect();
+    	}
+    }
 }
