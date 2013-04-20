@@ -87,13 +87,25 @@ public class MainActivity extends Activity {
     
     public void onDisconnectClick(View view) {
     	// If we're not connected to WiFi, let user know we can't disconnect
-    	if (mConnectivityManager.getActiveNetworkInfo().getType() !=
-    			ConnectivityManager.TYPE_WIFI) {
+    	if (mWifiManager.getConnectionInfo() == null) {
+    	//if (type != ConnectivityManager.TYPE_WIFI) {
     		Toast.makeText(getApplicationContext(),
     				       "Not connected to WiFi",
     				       Toast.LENGTH_SHORT).show();
     	} else {
-    		mWifiManager.disconnect();
+    		if (!mWifiManager.disconnect()) {
+    			Toast.makeText(getApplicationContext(),
+ 				               "Could not disconnect from WiFi",
+ 				               Toast.LENGTH_SHORT).show();
+    		}
+    	}
+    }
+    
+    public void onReconnectClick(View view) {
+    	if (!mWifiManager.reconnect()) {
+    		Toast.makeText(getApplicationContext(),
+					       "Could not reconnect to WiFi",
+				           Toast.LENGTH_SHORT).show();
     	}
     }
 }

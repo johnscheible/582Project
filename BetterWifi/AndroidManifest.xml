@@ -31,6 +31,11 @@
             android:name="com.johnscheible.spewdp.SpewService"
             android:label="@string/service_name">
         </service>
+        <receiver android:name="WifiChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
