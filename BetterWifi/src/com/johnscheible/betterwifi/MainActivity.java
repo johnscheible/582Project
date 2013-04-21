@@ -90,6 +90,8 @@ public class MainActivity extends Activity {
     }
     
     public void onDisconnectClick(View view) {
+    	Log.i(TAG, "Attempting to disconnect");
+    	Log.i(TAG, "WiFi status: " + mWifiManager.getWifiState());
     	// If we're not connected to WiFi, let user know we can't disconnect
     	if (mWifiManager.getConnectionInfo() == null) {
     	//if (type != ConnectivityManager.TYPE_WIFI) {
@@ -107,12 +109,21 @@ public class MainActivity extends Activity {
     }
     
     public void onReconnectClick(View view) {
-    	mWifiManager.enableNetwork(mLastNetId, false);
+    	Log.i(TAG, "Attempting to resconnect");
+    	Log.i(TAG, "WiFi status: " + mWifiManager.getWifiState());
+//    	mWifiManager.enableNetwork(mLastNetId, false);
     	
     	List<WifiConfiguration> wifiNetworks = mWifiManager.getConfiguredNetworks();
     	String stuff = "";
     	for (WifiConfiguration network : wifiNetworks) {
     		stuff += network.SSID + "\n";
+    		Log.i(TAG, network.SSID);
+    		if(network.SSID.equals("\"MGuest\"")) {
+    			Log.i(TAG, "alsdkjflskdfj");
+    			mWifiManager.enableNetwork(network.networkId, true);
+    			boolean didReconnect = mWifiManager.reconnect();
+    			Log.i(TAG, "didReconnect: " + didReconnect);
+    		}
     	}
     	Toast.makeText(getApplicationContext(),
 			       stuff,
