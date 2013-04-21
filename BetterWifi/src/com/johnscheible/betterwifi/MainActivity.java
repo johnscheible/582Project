@@ -91,6 +91,8 @@ public class MainActivity extends Activity {
     }
     
     public void onDisconnectClick(View view) {
+    	Log.i(TAG, "Attempting to disconnect");
+    	Log.i(TAG, "WiFi status: " + mWifiManager.getWifiState());
     	// If we're not connected to WiFi, let user know we can't disconnect
     	if (mWifiManager.getConnectionInfo() == null) {
     	//if (type != ConnectivityManager.TYPE_WIFI) {
@@ -110,12 +112,20 @@ public class MainActivity extends Activity {
     }
     
     public void onReconnectClick(View view) {
-    	// Figure out which one to reconnect to...
-    	List<WifiConfiguration> networks = mWifiManager.getConfiguredNetworks();
-    	int netId = -1;
-    	for (WifiConfiguration network : networks) {
-    		if (network.SSID.equals(mLastSsid)) {
-    			netId = network.networkId;
+    	Log.i(TAG, "Attempting to resconnect");
+    	Log.i(TAG, "WiFi status: " + mWifiManager.getWifiState());
+//    	mWifiManager.enableNetwork(mLastNetId, false);
+    	
+    	List<WifiConfiguration> wifiNetworks = mWifiManager.getConfiguredNetworks();
+    	String stuff = "";
+    	for (WifiConfiguration network : wifiNetworks) {
+    		stuff += network.SSID + "\n";
+    		Log.i(TAG, network.SSID);
+    		if(network.SSID.equals("\"MGuest\"")) {
+    			Log.i(TAG, "alsdkjflskdfj");
+    			mWifiManager.enableNetwork(network.networkId, true);
+    			boolean didReconnect = mWifiManager.reconnect();
+    			Log.i(TAG, "didReconnect: " + didReconnect);
     		}
     	}
     	
