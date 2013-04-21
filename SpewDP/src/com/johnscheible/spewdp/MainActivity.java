@@ -1,15 +1,19 @@
 package com.johnscheible.spewdp;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.net.ConnectivityManager;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -17,8 +21,9 @@ public class MainActivity extends Activity {
     private EditText mIpAddressTextField;
     private EditText mPortNumberTextField;
     private Button mServiceButton;
-    private Button mNetworkPreferenceButton;
-    private ConnectivityManager mConnectivityManager;
+    private Spinner mPolicySpinner;
+//    private ConnectivityManager mConnectivityManager;
+    private ComponentName mPolicyReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +34,9 @@ public class MainActivity extends Activity {
         mIpAddressTextField = (EditText) findViewById(R.id.ip_address);
         mPortNumberTextField = (EditText) findViewById(R.id.port_number);
         mServiceButton = (Button) findViewById(R.id.service_button);
-        mNetworkPreferenceButton = (Button) findViewById(R.id.network_preference_button);
-        mConnectivityManager =
-        		(ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        mPolicySpinner = (Spinner) findViewById(R.id.policy_spinner);
+//        mConnectivityManager =
+//        		(ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     @Override
@@ -43,13 +48,6 @@ public class MainActivity extends Activity {
             switchButtonToStop();
         } else {
             switchButtonToStart();
-        }
-        
-        // Set up the preference button depending on preference
-        if (mConnectivityManager.getNetworkPreference() != ConnectivityManager.TYPE_MOBILE) {
-        	switchButtonToMobile();
-        } else {
-        	switchButtonToDefault();
         }
     }
 
@@ -69,14 +67,44 @@ public class MainActivity extends Activity {
                 try {
                     int portNumber = Integer.parseInt(mPortNumberTextField.getText().toString());
                     if (!SpewService.sIsRunning) {
+                    	// Build Intent
                         Intent intent = new Intent(MainActivity.this, SpewService.class);
                         intent.putExtra(SpewService.EXTRA_IP_ADDRESS, ipAddress);
                         intent.putExtra(SpewService.EXTRA_PORT_NUMBER, portNumber);
                     
+                        // Determine which policy to use
+                        String policy = mPolicySpinner.getSelectedItem().toString();
+                        if (policy.equals(getString(R.string.abandon_ship))) {
+                        	
+                        } else if (policy.equals(getString(R.string.bouncer))) {
+                        	mPolicyReceiver = new ComponentName(getApplicationContext(), 
+                        			                            BouncerReceiver.class);
+                        } else if (policy.equals(getString(R.string.third_one))) {
+                        	
+                        } else {
+                        	Log.e(TAG, "Unrecognized policy. Not starting spewing");
+                        	return;
+                        }
+                        
+                        // Register the policy to handle WiFi changes
+                        if (mPolicyReceiver != null) {
+                        	Log.i(TAG, "Enabling " + policy + " for WiFi receiver");
+                        	PackageManager pm = getApplicationContext().getPackageManager();
+                        	pm.setComponentEnabledSetting(mPolicyReceiver,
+                        			PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        			PackageManager.DONT_KILL_APP);
+                        } else {
+                        	Log.d(TAG, "Tried to enable null policy. Not starting Spewing");
+                        	return;
+                        }
+                        
+                        // Start Spewing
                         Log.i(TAG, "Starting SpewService");
                         startService(intent);
                         
                         switchButtonToStop();
+                    } else {
+                    	Log.d(TAG, "Tried to start SpewService when it was running");
                     }
                 } catch (NumberFormatException e) {
                     Log.e(TAG, e.getMessage());
@@ -93,37 +121,31 @@ public class MainActivity extends Activity {
                 if (SpewService.sIsRunning) {
                     Intent intent = new Intent(MainActivity.this, SpewService.class);
                     
+                    // Stop SpewService
                     Log.i(TAG, "Stoping SpewService");
                     stopService(intent);
+                    
+                    // Unregister our policy
+                    if (mPolicyReceiver != null) {
+                    	PackageManager pm = getApplicationContext().getPackageManager();
+                    	pm.setComponentEnabledSetting(mPolicyReceiver,
+                    			PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    			PackageManager.DONT_KILL_APP);
+                    	Log.i(TAG, "Disabled policy receiver");
+                    } else {
+                    	Log.d(TAG, "Tried to disable null policy");
+                    }
+                } else {
+                	Log.d(TAG, "Tried to stop SpewService when it wasn't running");
                 }
                 switchButtonToStart();
             }
         });
     }
     
-    private void switchButtonToMobile() {
-        mNetworkPreferenceButton.setText(R.string.prefer_mobile_button_label);
-        mNetworkPreferenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {    
-                Log.i(TAG, "Setting network preference to WiFi");
-                mConnectivityManager.setNetworkPreference(ConnectivityManager.TYPE_MOBILE);
-                switchButtonToDefault();
-            }
-        });
-    }
-    
-    private void switchButtonToDefault() {
-        mNetworkPreferenceButton.setText(R.string.prefer_default_button_label);
-        mNetworkPreferenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "Setting network preference to Default");
-                mConnectivityManager.setNetworkPreference(
-                		ConnectivityManager.DEFAULT_NETWORK_PREFERENCE);
-                switchButtonToMobile();
-            }
-        });
-    }
-
+//    public void switchPolicy(View view) {
+//    	String policy = mPolicySpinner.getSelectedItem().toString();
+//    	Log.i(TAG, "Policy set to " + policy);
+//    	Toast.makeText(this, "Policy set to " + policy, Toast.LENGTH_SHORT).show();
+//    }
 }
