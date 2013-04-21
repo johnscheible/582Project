@@ -1,9 +1,8 @@
 package com.johnscheible.spewdp;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,8 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class WifiChangeReceiver extends BroadcastReceiver {
-	private static final String TAG = "WifiChangeReceiver";
+public class BouncerReceiver extends BroadcastReceiver {
+	private static final String TAG = "BouncerReceiver";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -26,31 +25,14 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		}
 		
 		NetworkInfo netInfo = extras.getParcelable(WifiManager.EXTRA_NETWORK_INFO);
-		Intent service = new Intent(context, AbandonShipService.class);
 		switch (netInfo.getState()) {
 			case CONNECTED:
-<<<<<<< HEAD
-				if(!AbandonShipService.mIsRunning) {
-					AbandonShipService.mIsRunning = true;
-					Log.i(TAG, "Connected to WiFi. Starting Monitor service");
-					Toast.makeText(context,
-				                   "Connected to " + netInfo.toString(),
-				                   Toast.LENGTH_LONG).show();
-					context.startService(service);
-				}
-=======
 				Log.i(TAG, "Connected to WiFi. Starting Monitor service");
 				Toast.makeText(context,
 			                   "Connected to " + netInfo.toString(),
 			                   Toast.LENGTH_LONG).show();
-				context.startService(service);
 				new Thread(new BouncerRunner(netInfo, context)).start();
->>>>>>> bouncer
 				break;
-			case DISCONNECTING:
-			case DISCONNECTED:
-//				Log.i(TAG, "Disconnecting from WiFi. Stopping Monitor service");
-//				context.stopService(service);
 		}
 		
 	}
@@ -69,8 +51,8 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			for (int i = 0; i < NUM_TRIES; i++) {
 				// Ping Google to make sure we're online
 				try {
-					HttpsURLConnection urlc = 
-							(HttpsURLConnection) (new URL("http://www.google.com").openConnection());
+					HttpURLConnection urlc = 
+							(HttpURLConnection) (new URL("http://www.google.com").openConnection());
 					urlc.setRequestProperty("User-Agent", "Test");
 					urlc.setRequestProperty("Connection", "close");
 					urlc.setConnectTimeout(1500);
@@ -78,12 +60,12 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					if (urlc.getResponseCode() != 200) {
 						Log.i(TAG, "Could not reach Google on attempt " + i);
 						bounce(mContext);
-						break;
+						return;
 					}
 				} catch (IOException e) {
 					Log.e(TAG, "Error in checking Google on attmept " + i);
 					bounce(mContext);
-					break;
+					return;
 				}
 				
 				// Sleep 3 seconds between pings

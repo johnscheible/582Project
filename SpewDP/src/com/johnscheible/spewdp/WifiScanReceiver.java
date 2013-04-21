@@ -11,9 +11,9 @@ import android.util.Log;
 
 
 public class WifiScanReceiver extends BroadcastReceiver {
+	public static int sCount        = 0;
 	private static final String TAG = "WifiScanReceiver";
 	public static HashMap<String, HashMap<Integer, Integer>> sStrengthsMap = new HashMap<String, HashMap<Integer, Integer>>();
-	public static int sCount = 0;
 
 	@Override
 	public void onReceive(Context c, Intent intent) {
@@ -23,8 +23,6 @@ public class WifiScanReceiver extends BroadcastReceiver {
 		for(ScanResult result : scanResultsList) {
 			Log.i(TAG, "SSID: " + result.SSID);
 			if(result.SSID.equals("MGuest") || result.SSID.equals("\"MGuest\"")) {
-//				Log.i(TAG, "sStrengthsMap: " + sStrengthsMap);
-//				Log.i(TAG, "result.BSSID: " + result.BSSID);
 				if(!sStrengthsMap.containsKey(result.BSSID)) {
 					sStrengthsMap.put(result.BSSID, new HashMap<Integer, Integer>());
 				}
@@ -36,3 +34,35 @@ public class WifiScanReceiver extends BroadcastReceiver {
 		wfm.startScan();
 	}
 }
+
+// code that used to be in SpewService
+   //      	Log.i(TAG, "About to write aps");
+   //      	FileOutputStream aps = null;
+			// try {
+			// 	aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
+			// } catch (FileNotFoundException e) {
+			// 	// TODO Auto-generated catch block
+			// 	e.printStackTrace();
+			// }
+   //      	String theData = "";
+   //  		ArrayList<HashMap<Integer, Integer>> values = 
+   //  				new ArrayList(WifiScanReceiver.sStrengthsMap.values());
+   //      	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
+   //      		String line = "";
+   //  			for(int j = 0; j < values.size(); j++) {
+   //  				if(values.get(j).containsKey(i)) {
+   //  					line += values.get(j).get(i) + "\t";
+   //  				} else {
+   //  					line += -100 + "\t";
+   //  				}
+   //      		}
+   //  			theData += line + "\n";
+   //      	}
+   //      	try {
+			// 	aps.write(theData.getBytes());
+			// 	aps.close();
+   //          	Log.i(TAG, "Wrote aps");
+			// } catch (IOException e) {
+			// 	// TODO Auto-generated catch block
+			// 	e.printStackTrace();
+			// }
