@@ -130,16 +130,13 @@ public class MainActivity extends Activity {
     	}
     	
     	Toast.makeText(getApplicationContext(),
-				   	   mLastSsid + " " + netId,
+				   	   stuff,
 		               Toast.LENGTH_SHORT).show();
     	
-    	if (netId != -1) {
-    		Log.d(TAG, "Attempting reconnect...");
-    		mWifiManager.enableNetwork(netId, true);
-    	
-    		if (!mWifiManager.reconnect()) {
-    			Log.e(TAG, "Could not reconnect...");
-    		}
+    	if (!mWifiManager.reassociate()) {
+    		Toast.makeText(getApplicationContext(),
+				   	   "Could not reconnect to WiFi",
+		               Toast.LENGTH_SHORT).show();
     	}
     }
 }

@@ -7,18 +7,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
@@ -72,31 +67,6 @@ public class SpewService extends Service {
             	}
             }
             
-            // set up scanning
-            class WifiReceiver extends BroadcastReceiver {
-            	public HashMap<String, HashMap<Integer, Integer>> strengthsMap;
-            	public int count = 0;
-            	
-            	 public void onReceive(Context c, Intent intent) {
-                     List<ScanResult> scanResultsList = mWifiManager.getScanResults();
-                     for(ScanResult result : scanResultsList) {
-                    	 Log.i(TAG, "SSID: " + result.SSID);
-                    	 if(result.SSID.equals("MGuest") || result.SSID.equals("\"MGuest\"")) {
-                    		 if(!strengthsMap.containsKey(result.BSSID)) {
-                    			 strengthsMap.put(result.BSSID, new HashMap<Integer, Integer>());
-                    		 }
-                    		 strengthsMap.get(result.BSSID).put(count, result.level);
-                    	 }
-                     }
-                     // SCAN AGAIN
-                     count++;
-                     getApplicationContext().registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                     mWifiManager.startScan();
-                 }
-            }
-            
-            WifiReceiver receiverWifi = new WifiReceiver();
-            getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
             mWifiManager.startScan();
             
             while (mKeepRunning) {
@@ -157,7 +127,7 @@ public class SpewService extends Service {
             			                        null,
             			                        null);
             	
-            	FileOutputStream aps;
+            	FileOutputStream aps = null;
 				try {
 					aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
 				} catch (FileNotFoundException e) {
@@ -165,8 +135,9 @@ public class SpewService extends Service {
 					e.printStackTrace();
 				}
             	String theData = "";
-        		HashMap<Integer, Integer>[] values = (HashMap<Integer, Integer>[]) receiverWifi.strengthsMap.values().toArray();
-            	for(int i = 0; i < receiverWifi.count; i++) {
+        		HashMap<Integer, Integer>[] values = 
+        				(HashMap<Integer, Integer>[]) WifiScanReceiver.sStrengthsMap.values().toArray();
+            	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
             		String line = "";
         			for(int j = 0; i < values.length; j++) {
         				if(values[j].containsKey(i)) {
