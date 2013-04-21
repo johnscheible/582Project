@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     //private Button mDisconnectButton;
     private WifiManager mWifiManager;
     private ConnectivityManager mConnectivityManager;
-    private int mLastNetId;
+    private String mLastSsid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
         //mDisconnectButton = (Button) findViewById(R.id.disconnect_button);
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        mLastSsid = null;
     }
 
     @Override
@@ -97,7 +98,9 @@ public class MainActivity extends Activity {
     				       "Not connected to WiFi",
     				       Toast.LENGTH_SHORT).show();
     	} else {
-    		mLastNetId = mWifiManager.getConnectionInfo().getNetworkId();
+    		if (mLastSsid == null) {
+    		    mLastSsid = mWifiManager.getConnectionInfo().getSSID();
+    		}
     		if (!mWifiManager.disconnect()) {
     			Toast.makeText(getApplicationContext(),
  				               "Could not disconnect from WiFi",
@@ -107,21 +110,26 @@ public class MainActivity extends Activity {
     }
     
     public void onReconnectClick(View view) {
-    	mWifiManager.enableNetwork(mLastNetId, false);
-    	
-    	List<WifiConfiguration> wifiNetworks = mWifiManager.getConfiguredNetworks();
-    	String stuff = "";
-    	for (WifiConfiguration network : wifiNetworks) {
-    		stuff += network.SSID + "\n";
+    	// Figure out which one to reconnect to...
+    	List<WifiConfiguration> networks = mWifiManager.getConfiguredNetworks();
+    	int netId = -1;
+    	for (WifiConfiguration network : networks) {
+    		if (network.SSID.equals(mLastSsid)) {
+    			netId = network.networkId;
+    		}
     	}
-    	Toast.makeText(getApplicationContext(),
-			       stuff,
-		           Toast.LENGTH_SHORT).show();
     	
-    	if (!mWifiManager.reassociate()) {
-    		Toast.makeText(getApplicationContext(),
-					       "Could not reconnect to WiFi",
-				           Toast.LENGTH_SHORT).show();
+    	Toast.makeText(getApplicationContext(),
+				   	   mLastSsid + " " + netId,
+		               Toast.LENGTH_SHORT).show();
+    	
+    	if (netId != -1) {
+    		Log.d(TAG, "Attempting reconnect...");
+    		mWifiManager.enableNetwork(netId, true);
+    	
+    		if (!mWifiManager.reconnect()) {
+    			Log.e(TAG, "Could not reconnect...");
+    		}
     	}
     }
 }
