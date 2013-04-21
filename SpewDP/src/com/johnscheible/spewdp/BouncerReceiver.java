@@ -1,9 +1,8 @@
 package com.johnscheible.spewdp;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -52,8 +51,8 @@ public class BouncerReceiver extends BroadcastReceiver {
 			for (int i = 0; i < NUM_TRIES; i++) {
 				// Ping Google to make sure we're online
 				try {
-					HttpsURLConnection urlc = 
-							(HttpsURLConnection) (new URL("http://www.google.com").openConnection());
+					HttpURLConnection urlc = 
+							(HttpURLConnection) (new URL("http://www.google.com").openConnection());
 					urlc.setRequestProperty("User-Agent", "Test");
 					urlc.setRequestProperty("Connection", "close");
 					urlc.setConnectTimeout(1500);
@@ -61,12 +60,12 @@ public class BouncerReceiver extends BroadcastReceiver {
 					if (urlc.getResponseCode() != 200) {
 						Log.i(TAG, "Could not reach Google on attempt " + i);
 						bounce(mContext);
-						break;
+						return;
 					}
 				} catch (IOException e) {
 					Log.e(TAG, "Error in checking Google on attmept " + i);
 					bounce(mContext);
-					break;
+					return;
 				}
 				
 				// Sleep 3 seconds between pings

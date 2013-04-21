@@ -46,13 +46,13 @@ public final class R {
         public static final int bouncer=0x7f05000a;
         public static final int ip_hint=0x7f050003;
         public static final int ip_label=0x7f050002;
+        public static final int none=0x7f05000b;
         public static final int policy_label=0x7f050008;
         public static final int policy_switch_label=0x7f05000c;
         public static final int port_hint=0x7f050005;
         public static final int port_label=0x7f050004;
         public static final int start_button_label=0x7f050006;
         public static final int stop_button_label=0x7f050007;
-        public static final int third_one=0x7f05000b;
     }
     public static final class style {
         /** 

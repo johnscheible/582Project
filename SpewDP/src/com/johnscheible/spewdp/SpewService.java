@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.HashMap;
 
 import android.app.Service;
 import android.content.Context;
@@ -127,33 +126,33 @@ public class SpewService extends Service {
             			                        null,
             			                        null);
             	
-            	FileOutputStream aps = null;
-				try {
-					aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	String theData = "";
-        		HashMap<Integer, Integer>[] values = 
-        				(HashMap<Integer, Integer>[]) WifiScanReceiver.sStrengthsMap.values().toArray();
-            	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
-            		String line = "";
-        			for(int j = 0; i < values.length; j++) {
-        				if(values[j].containsKey(i)) {
-        					line += values[j].get(i) + "\t";
-        				} else {
-        					line += -200 + "\t";
-        				}
-            		}
-        			theData += line + "\n";
-            	}
-            	try {
-					aps.write(theData.getBytes());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//            	FileOutputStream aps = null;
+//				try {
+//					aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//            	String theData = "";
+//        		HashMap<Integer, Integer>[] values = 
+//        				(HashMap<Integer, Integer>[]) WifiScanReceiver.sStrengthsMap.values().toArray();
+//            	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
+//            		String line = "";
+//        			for(int j = 0; i < values.length; j++) {
+//        				if(values[j].containsKey(i)) {
+//        					line += values[j].get(i) + "\t";
+//        				} else {
+//        					line += -200 + "\t";
+//        				}
+//            		}
+//        			theData += line + "\n";
+//            	}
+//            	try {
+//					aps.write(theData.getBytes());
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
             }
         }
     }

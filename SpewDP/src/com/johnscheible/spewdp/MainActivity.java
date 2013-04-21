@@ -1,12 +1,9 @@
 package com.johnscheible.spewdp;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -79,7 +76,7 @@ public class MainActivity extends Activity {
                         } else if (policy.equals(getString(R.string.bouncer))) {
                         	mPolicyReceiver = new ComponentName(getApplicationContext(), 
                         			                            BouncerReceiver.class);
-                        } else if (policy.equals(getString(R.string.third_one))) {
+                        } else if (policy.equals(getString(R.string.none))) {
                         	
                         } else {
                         	Log.e(TAG, "Unrecognized policy. Not starting spewing");

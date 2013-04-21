@@ -12,12 +12,12 @@
     <string name="policy_label">Selected Policy</string>
     <string name="abandon_ship">Abandon Ship!</string>
     <string name="bouncer">Bouncer</string>
-    <string name="third_one">\?\?\?</string>
+    <string name="none">None</string>
 
     <string-array name="policies_array">
         <item>@string/abandon_ship</item>
         <item>@string/bouncer</item>
-        <item>@string/third_one</item>
+        <item>@string/none</item>
     </string-array>
     
     <string name="policy_switch_label">Switch</string>
