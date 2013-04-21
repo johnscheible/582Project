@@ -72,12 +72,13 @@ public class MainActivity extends Activity {
                         // Determine which policy to use
                         String policy = mPolicySpinner.getSelectedItem().toString();
                         if (policy.equals(getString(R.string.abandon_ship))) {
-                        	
+                        	mPolicyReceiver = new ComponentName(getApplicationContext(), 
+		                                                        AbandonShipReceiver.class);
                         } else if (policy.equals(getString(R.string.bouncer))) {
                         	mPolicyReceiver = new ComponentName(getApplicationContext(), 
                         			                            BouncerReceiver.class);
                         } else if (policy.equals(getString(R.string.none))) {
-                        	
+                        	; // We want mPolicyReceiver to stay false, but don't want to return
                         } else {
                         	Log.e(TAG, "Unrecognized policy. Not starting spewing");
                         	return;
@@ -91,8 +92,7 @@ public class MainActivity extends Activity {
                         			PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                         			PackageManager.DONT_KILL_APP);
                         } else {
-                        	Log.d(TAG, "Tried to enable null policy. Not starting Spewing");
-                        	return;
+                        	Log.i(TAG, "No policy enabled: control run");
                         }
                         
                         // Start Spewing
