@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class WifiScanReceiver extends BroadcastReceiver {
 	private static final String TAG = "WifiScanReceiver";
-	public static HashMap<String, HashMap<Integer, Integer>> sStrengthsMap;
+	public static HashMap<String, HashMap<Integer, Integer>> sStrengthsMap = new HashMap<String, HashMap<Integer, Integer>>();
 	public static int sCount = 0;
 
 	@Override
@@ -23,6 +23,8 @@ public class WifiScanReceiver extends BroadcastReceiver {
 		for(ScanResult result : scanResultsList) {
 			Log.i(TAG, "SSID: " + result.SSID);
 			if(result.SSID.equals("MGuest") || result.SSID.equals("\"MGuest\"")) {
+//				Log.i(TAG, "sStrengthsMap: " + sStrengthsMap);
+//				Log.i(TAG, "result.BSSID: " + result.BSSID);
 				if(!sStrengthsMap.containsKey(result.BSSID)) {
 					sStrengthsMap.put(result.BSSID, new HashMap<Integer, Integer>());
 				}

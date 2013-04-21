@@ -35,16 +35,18 @@
             android:enabled="true" >
         </service>
         <service
-            android:name="com.johnscheible.betterwifi.AbandonShipService"
+            android:name="com.johnscheible.spewdp.AbandonShipService"
             android:enabled="true" >
         </service>
 
+<!--
         <receiver android:name="com.johnscheible.spewdp.WifiScanReceiver" >
             <intent-filter>
                 <action android:name="android.net.wifi.SCAN_RESULTS" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.johnscheible.betterwifi.WifiChangeReceiver" >
+-->
+        <receiver android:name="com.johnscheible.spewdp.WifiChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>

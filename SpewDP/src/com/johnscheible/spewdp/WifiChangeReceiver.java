@@ -24,16 +24,19 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		Intent service = new Intent(context, AbandonShipService.class);
 		switch (netInfo.getState()) {
 			case CONNECTED:
-				Log.i(TAG, "Connected to WiFi. Starting Monitor service");
-				Toast.makeText(context,
-			                   "Connected to " + netInfo.toString(),
-			                   Toast.LENGTH_LONG).show();
-				context.startService(service);
+				if(!AbandonShipService.mIsRunning) {
+					AbandonShipService.mIsRunning = true;
+					Log.i(TAG, "Connected to WiFi. Starting Monitor service");
+					Toast.makeText(context,
+				                   "Connected to " + netInfo.toString(),
+				                   Toast.LENGTH_LONG).show();
+					context.startService(service);
+				}
 				break;
 			case DISCONNECTING:
 			case DISCONNECTED:
-				Log.i(TAG, "Disconnecting from WiFi. Stopping Monitor service");
-				context.stopService(service);
+//				Log.i(TAG, "Disconnecting from WiFi. Stopping Monitor service");
+//				context.stopService(service);
 		}
 		
 	}

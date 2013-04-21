@@ -7,19 +7,16 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SpewService extends Service {
     private static final String TAG = "SpewService";
@@ -46,26 +43,26 @@ public class SpewService extends Service {
         public void run() {
             sIsRunning = true;
             int sequenceNumber = 0;
-            FileOutputStream fos = null;
-            File file = null;
+//            FileOutputStream fos = null;
+//            File file = null;
             
             // Set up output file:
-            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                Toast.makeText(getApplicationContext(),
-                		       "Not logging WiFi Strength",
-                               Toast.LENGTH_SHORT).show();
-            } else {
-            	String fname = new Date().toString().replace(" ", "_");
-            	fname += ".txt";
-            	file = new File(getExternalFilesDir(null), fname);
-            	try {
-            		fos = new FileOutputStream(file);
-            	} catch (FileNotFoundException e) {
-            		Toast.makeText(getApplicationContext(),
-             		       "How was the file not found?",
-                            Toast.LENGTH_SHORT).show();
-            	}
-            }
+//            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//                Toast.makeText(getApplicationContext(),
+//                		       "Not logging WiFi Strength",
+//                               Toast.LENGTH_SHORT).show();
+//            } else {
+//            	String fname = "str";//new Date().toString().replace(" ", "_");
+//            	fname += ".txt";
+//            	file = new File(getExternalFilesDir(null), fname);
+//            	try {
+//            		fos = new FileOutputStream(file);
+//            	} catch (FileNotFoundException e) {
+//            		Toast.makeText(getApplicationContext(),
+//             		       "How was the file not found?",
+//                            Toast.LENGTH_SHORT).show();
+//            	}
+//            }
             
             mWifiManager.startScan();
             
@@ -79,18 +76,18 @@ public class SpewService extends Service {
                     msg = "Sending packet " + sequenceNumber + ": MOBILE\n";
                 }
                 
-                // If we have a file, write to it otherwise show a toast
-                try {	
-                	if (fos != null) {
-                		fos.write(msg.getBytes());
-                	} else {
-                		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                	}
-                } catch (IOException e) {
-                	Toast.makeText(getApplicationContext(),
-              		               (CharSequence) ("I guesss we can't write cause FUCK YOU"),
-                                   Toast.LENGTH_SHORT).show();
-                }
+//                // If we have a file, write to it otherwise show a toast
+//                try {	
+//                	if (fos != null) {
+//                		fos.write(msg.getBytes());
+//                	} else {
+//                		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+//                	}
+//                } catch (IOException e) {
+//                	Toast.makeText(getApplicationContext(),
+//              		               (CharSequence) ("I guesss we can't write cause FUCK YOU"),
+//                                   Toast.LENGTH_SHORT).show();
+//                }
                 
                 try {
                     // Build a packet
@@ -115,48 +112,51 @@ public class SpewService extends Service {
             }
             
             // Clean up...
-            if (fos != null && file != null) {
-            	try {
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            	String[] files = {file.getAbsolutePath()};
-            	MediaScannerConnection.scanFile(getApplicationContext(),
-            			                        files, 
-            			                        null,
-            			                        null);
-            	
-            	FileOutputStream aps = null;
-				try {
-					aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	String theData = "";
-        		HashMap<Integer, Integer>[] values = 
-        				(HashMap<Integer, Integer>[]) WifiScanReceiver.sStrengthsMap.values().toArray();
-            	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
-            		String line = "";
-        			for(int j = 0; i < values.length; j++) {
-        				if(values[j].containsKey(i)) {
-        					line += values[j].get(i) + "\t";
-        				} else {
-        					line += -200 + "\t";
-        				}
-            		}
-        			theData += line + "\n";
-            	}
-            	try {
-					aps.write(theData.getBytes());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
+//            if (fos != null && file != null) {
+//            	try {
+//					fos.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//            	String[] files = {file.getAbsolutePath()};
+//            	MediaScannerConnection.scanFile(getApplicationContext(),
+//            			                        files, 
+//            			                        null,
+//            			                        null);
+        	
+        	Log.i(TAG, "About to write aps");
+        	FileOutputStream aps = null;
+			try {
+				aps = new FileOutputStream(new File(getExternalFilesDir(null), "aps.txt"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	String theData = "";
+    		ArrayList<HashMap<Integer, Integer>> values = 
+    				new ArrayList(WifiScanReceiver.sStrengthsMap.values());
+        	for(int i = 0; i < WifiScanReceiver.sCount; i++) {
+        		String line = "";
+    			for(int j = 0; j < values.size(); j++) {
+    				if(values.get(j).containsKey(i)) {
+    					line += values.get(j).get(i) + "\t";
+    				} else {
+    					line += -100 + "\t";
+    				}
+        		}
+    			theData += line + "\n";
+        	}
+        	try {
+				aps.write(theData.getBytes());
+				aps.close();
+            	Log.i(TAG, "Wrote aps");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
+//    }
     
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
