@@ -56,14 +56,16 @@ public class BouncerReceiver extends BroadcastReceiver {
 					urlc.setRequestProperty("User-Agent", "Test");
 					urlc.setRequestProperty("Connection", "close");
 					urlc.setConnectTimeout(1500);
+					urlc.setInstanceFollowRedirects(false);
 					urlc.connect();
+					Log.d(TAG, "Connected with response "+ urlc.getResponseCode());
 					if (urlc.getResponseCode() != 200) {
-						Log.i(TAG, "Could not reach Google on attempt " + i);
+						Log.i(TAG, "Could not reach UMich on attempt " + i);
 						bounce(mContext);
 						return;
 					}
 				} catch (IOException e) {
-					Log.e(TAG, "Error in checking Google on attmept " + i);
+					Log.e(TAG, "Error in checking UMich on attmept " + i);
 					bounce(mContext);
 					return;
 				}

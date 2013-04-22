@@ -125,15 +125,16 @@ public class MainActivity extends Activity {
                     stopService(intent);
                     
                     // Unregister our policy
-                    if (mPolicyReceiver != null) {
                     	PackageManager pm = getApplicationContext().getPackageManager();
-                    	pm.setComponentEnabledSetting(mPolicyReceiver,
+                    	pm.setComponentEnabledSetting(
+                    			new ComponentName(getApplicationContext(), AbandonShipReceiver.class),
                     			PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     			PackageManager.DONT_KILL_APP);
-                    	Log.i(TAG, "Disabled policy receiver");
-                    } else {
-                    	Log.d(TAG, "Tried to disable null policy");
-                    }
+                    	pm.setComponentEnabledSetting(
+                    			new ComponentName(getApplicationContext(), BouncerReceiver.class),
+                    			PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    			PackageManager.DONT_KILL_APP);
+                    	Log.i(TAG, "Disabled WiFi connection receivers");
                 } else {
                 	Log.d(TAG, "Tried to stop SpewService when it wasn't running");
                 }
