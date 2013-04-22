@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
                         } else {
                         	Log.e(TAG, "Unrecognized policy. Not starting spewing");
                         	return;
-                        }
+                        } 
                         
                         // Register the policy to handle WiFi changes
                         if (mPolicyReceiver != null) {
