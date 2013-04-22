@@ -28,7 +28,11 @@ public class AbandonShipReceiver extends BroadcastReceiver {
 				Toast.makeText(context,
 			                   "Connected to " + netInfo.toString(),
 			                   Toast.LENGTH_LONG).show();
-				context.startService(service);
+				if (!AbandonShipService.mIsRunning) {
+					context.startService(service);
+				} else {
+					Log.d(TAG, "Tried to start service after its running");
+				}
 				break;
 			case DISCONNECTING:
 			case DISCONNECTED:

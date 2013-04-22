@@ -39,11 +39,13 @@
             android:enabled="true" >
         </service>
 
+<!--
         <receiver android:name="com.johnscheible.spewdp.WifiScanReceiver" >
             <intent-filter>
                 <action android:name="android.net.wifi.SCAN_RESULTS" />
             </intent-filter>
         </receiver>
+-->
         <receiver
             android:name="com.johnscheible.spewdp.AbandonShipReceiver"
             android:enabled="false" >

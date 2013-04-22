@@ -115,6 +115,8 @@ public class MainActivity extends Activity {
         mServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            	AbandonShipService.mKeepRunning = false;
+            	
                 if (SpewService.sIsRunning) {
                     Intent intent = new Intent(MainActivity.this, SpewService.class);
                     

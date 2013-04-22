@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import android.app.Service;
 import android.content.Context;
@@ -15,9 +16,9 @@ import android.util.Log;
 
 public class AbandonShipService extends Service {
 	static boolean mIsRunning;
-	
-	private boolean mKeepRunning;
-    private WifiManager mWifiManager;
+	static boolean mKeepRunning;
+    
+	private WifiManager mWifiManager;
     
 	public AbandonShipService() {
 		Log.i("ABANDON", "WE'RE IN the constructor");
@@ -27,7 +28,7 @@ public class AbandonShipService extends Service {
 	
 	private final class ShipCaptain implements Runnable {
 		private final Intent mIntent;
-		private final int STRENGTH_THRESHOLD = -75;
+		private final int STRENGTH_THRESHOLD = -70;
 		private final int DURATION_THRESHOLD = 69;
 		private int sampleCount;
 		
@@ -39,6 +40,8 @@ public class AbandonShipService extends Service {
 		// If we get DURATION_THRESHOLD consecutive samples below STRENGTH_THRESHOLD, abandon ship!
 		public void run() {
             FileOutputStream fos = null;
+//            Date date = new Date();
+//            File file = new File(getExternalFilesDir(null), date.toString() + ".txt");
             File file = new File(getExternalFilesDir(null), "str.txt");
     		try {
 				fos = new FileOutputStream(file);
@@ -48,8 +51,9 @@ public class AbandonShipService extends Service {
 			}
 			
 			while(mKeepRunning) {
-//				Log.i("ABANDON", "IM RUNNING BOB");
+				Log.i("ABANDON", "IM RUNNING BOB");
 				if (mWifiManager.isWifiEnabled()) {
+//				if(true) {
                     WifiInfo wi = mWifiManager.getConnectionInfo();
                     int sigStrength = wi.getRssi();
                     
@@ -68,7 +72,7 @@ public class AbandonShipService extends Service {
                     if(sampleCount >= DURATION_THRESHOLD) {
                     	Log.i("ABANDON", "We are disconnecting!");
                     	try {
-							fos.write("WE ARE DISCONNECTING, HOMIE".getBytes());
+							fos.write("# WE ARE DISCONNECTING, HOMIE".getBytes());
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

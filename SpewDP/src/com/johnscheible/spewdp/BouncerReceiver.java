@@ -52,7 +52,7 @@ public class BouncerReceiver extends BroadcastReceiver {
 				// Ping Google to make sure we're online
 				try {
 					HttpURLConnection urlc = 
-							(HttpURLConnection) (new URL("http://www.google.com").openConnection());
+							(HttpURLConnection) (new URL("http://www.umich.edu").openConnection());
 					urlc.setRequestProperty("User-Agent", "Test");
 					urlc.setRequestProperty("Connection", "close");
 					urlc.setConnectTimeout(1500);
