@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
                         	mPolicyReceiver = new ComponentName(getApplicationContext(), 
                         			                            BouncerReceiver.class);
                         } else if (policy.equals(getString(R.string.none))) {
-                        	; // We want mPolicyReceiver to stay false, but don't want to return
+                        	mPolicyReceiver = null;; // We want mPolicyReceiver to stay false, but don't want to return
                         } else {
                         	Log.e(TAG, "Unrecognized policy. Not starting spewing");
                         	return;
