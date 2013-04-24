@@ -6,17 +6,21 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
 
 public class SpewService extends Service {
-    private static final String TAG = "SpewService";
-    public static final String EXTRA_IP_ADDRESS = "com.johnscheible.spewdp.IP_ADDRESS";
+    private static final String TAG              = "SpewService";
+    public static final String EXTRA_IP_ADDRESS  = "com.johnscheible.spewdp.IP_ADDRESS";
     public static final String EXTRA_PORT_NUMBER = "com.johnscheible.spewdp.PORT_NUMBER";
     
     private Thread mSpewThread;
     private boolean mKeepRunning;
+    private WifiManager mWifiManager;
     
     static boolean sIsRunning;
     
@@ -34,7 +38,18 @@ public class SpewService extends Service {
         public void run() {
             sIsRunning = true;
             int sequenceNumber = 0;
+            mWifiManager.startScan();
+            
             while (mKeepRunning) {
+                // Build message (for WiFi or mobile)
+            	String msg;
+                if (mWifiManager.isWifiEnabled()) {
+                    WifiInfo wi = mWifiManager.getConnectionInfo();
+                    msg = "Sending packet " + sequenceNumber + ": " + wi.getRssi() + "\n";
+                } else {
+                    msg = "Sending packet " + sequenceNumber + ": MOBILE\n";
+                }
+                
                 try {
                     // Build a packet
                     DatagramSocket socket = new DatagramSocket();
@@ -62,14 +77,15 @@ public class SpewService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mKeepRunning = true;
-        mSpewThread = new Thread(new SpewRunner(intent));
+        mWifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        mSpewThread  = new Thread(new SpewRunner(intent));
         mSpewThread.start();
         return START_REDELIVER_INTENT;
     }
     
     @Override
     public void onDestroy() {
-        sIsRunning = false;
+        sIsRunning   = false;
         mKeepRunning = false;
         return;
     }
