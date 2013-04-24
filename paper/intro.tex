@@ -1,0 +1,44 @@
+\section{Introduction}
+\label{sec:intro}
+
+[TODO - I'd like to add some more statistics here]
+
+In the era of always-connected mobile devices, a new breed of applications has arisen that depend on a constant connection from mobile devices to the internet. Users have come to rely heavily on the always-on property of these applications for regular and time-sensetive information. Applications that utilize always-on connectivity generally fall into these categories:
+
+\begin{description}
+\item[Notification-based] Applications relying on ``push notifications" to alert users to pertinent, time-sensitive information. This class of applications include email clients alerting users to a new email, social applications (e.g. Facebook, social games) updating users on relevant events, messaging applications (e.g. iMessage, KaokaoTalk), applications capable of providing emergency alerts, and other services that must present information as it becomes available.
+\item[Streaming] Applications streaming data that cannot be interrupted by connectivity problems. Common instances of streaming applications are audio streaming (e.g. Pandora, Spotify), video streaming (e.g. Youtube, Netflix), and real-time multiplayer games. Voice-over-IP (VOIP) services are also becoming more common on mobile devices (e.g. Skype, KaokaoTalk), and may soon replace traditional cellular service~\cite{cellPlans}.
+\end{description}
+
+Always-connected applications require guarantees of internet connectivity. These applications do not function correctly when they suffer from intermittent connections.
+
+Notification-based applications can likely tolerate a few seconds of downtime, although it is easy to imagine scenarios in which an application cannot tolerate downtimes on the order of minutes.
+
+Streaming applications, however, cannot tolerate such downtime. \emph{Real-time} streaming applications such as VOIP that cannot buffer for more than a few seconds absolutely cannot tolerate downtime. VOIP is impractical when the connection is dropped for more than a few seconds at a time. Applications that can buffer data, such as streaming video and audio applications, can tolerate some downtime, although in the many cases this is limited to a number of seconds.
+
+Mobile devices aim to provide 100\% internet connectivity. Connections are either established over a cellular data network or a WiFi connection. The general policy for choosing which connection to use is simple: always prefer usable WiFi connections over cellular data [TODO - THIS CLAIM IS UNFOUNDED]. It is based on a set of assumptions:
+
+\begin{itemize}
+\item WiFi connections are always faster than cellular connections.
+\item Cellular connections cost users more money to use than WiFi.
+\end{itemize}
+
+While these may have been true, they are becoming less and less so every day. With the advent of widely-available technologies like 4G LTE, the gap between WiFi and cellular connection speed continually shrinks [TODO - THIS CLAIM IS UNFOUNDED]. Additionally, data has become cheaper over time, and users' ``data cap" has become less of an issue [TODO - THIS CLAIM IS UNFOUNDED]. Therefore, these priorities are no longer the deciding factors in choosing whether to connect to the internet via WiFi or cellular data network.
+
+The ``WiFi first and always" policy creates serious problems for always-connected applications. In many everyday scenarios, internet connectivity is lost while mobile devices cling to unusable or weak WiFi networks. In these scenarios, a connections could be maintained by utilizing a cellular data connections, but the device instead loses connectivity because its absolutist policy.
+
+Three specific problems stand out, as they affect the average mobile device user (this paper's authors included) by disconnecting the device from the internet when a cellular connection could be used:
+
+\begin{enumerate}
+\item The mobile device connects to a WiFi network that is too weak to send data over.
+\item The mobile device connects to a WiFi network that requires authentication before the internet can be accessed.
+\item The mobile device remains connected to a WiFi network after the network becomes too weak to send data over.
+\end{enumerate}
+
+In all of these cases, mobile devices running the Android or iOS operating systems will remain disconnected until the user manually intervenes by forcing the device to abondon WiFi (usually by configuring a system setting). This can lead to downtime anywhere between less than a second to as long as it takes for a user to recognize the issue affecting the mobile device. In each of these scenarios, internet connectivity can be maintained by utilizing the cellular connection. The policies we propose to resolve these problems are:
+
+\begin{description}
+\item[Internet Access Testing] In order to address problems 1 and 2, we propose to test and judge the usability of WiFi networks before making decisions about whether to connect to them. The goal of this policy is to make informed decisions about whether connecting to a WiFi network can be done seamlessly (maintaining connectivity) or whether it will result in loss of internet connectivity.
+\item[Predictive WiFi Abandonment] In order to address problem 3, we propose to periodically sample the strength of the WiFi network the mobile device is currently connected to. Using this data, we can predict when a WiFi connection will become too weak to function, and swith to a cellular data connection if it is appropriate.
+\end{description}
+
