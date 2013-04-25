@@ -2,3 +2,21 @@
 \label{sec:design}
 
 % SPECIFICALLY address each of the 3 problems presented in the intro. Show how one policy fixes 2 of the problems, and how the other fixes 1.
+
+\section{Internet Access Testing} % TODO - ask John about this. I did a pretty small, crappy writeup
+In order to address problems 2 and 3, we designed a policy that would ensure that a mobile device does not connect to a WiFi network until it knows it will actually be capable of reaching the Internet over said network. The test is simple: when a new WiFi network is encountered and the device is using cellular data, attempt to ping a well known website (in our case, either google.com or umich.edu) via the new WiFi network. The test is repeated a certain number of times in order to ensure that the WiFi is offering the mobile device a stable connection.
+
+If the correct server responds to our GET request with a 200 response (indicating a successfuly request), the thread sleeps for an amount of time (in our case, 3 seconds) and continues pinging until we hit the number of tests we want to conduct (in our case, 2).
+
+If any of these tests fails, we terminate the WiFi connection, and continue to use the cellular connection. If all the tests succeed, the device is switched over to the WiFi network. This, optimally, will result in no connection downtime whatsoever, as the WiFi connection is not utilized until it has been tested for Internet accessability.
+
+The system is activated whenever the device is utilizing its cellular data connection, and encounters a new WiFi network\footnote{We did consider the possibility of testing each individual access point (rather than WiFi network) encountered, but this would result in a massive number of WiFi scans that would considerably drain the device's battery.}
+
+\section{Predictive WiFi Abandonment}
+In order to address problem 3, we designed a poilicy that would preemptively terminate connetions that are likely to degrade to the point of unusability. Currently, a mobile device will not disconnect from a WiFi network until it knows that it cannot reach the network anymore. This leads to downtime during the time when the device has not yet determined that reaching the network is impossible. The idea of this policy is based on a simple concept: that such downtime can be prevented by predicting when the network \emph{will} become unreachable, not when it already has become so.
+
+This test itself monitors the strength of a device's current WiFi connection. This information is obtained by querying the device's WiFi radio, which returns a received signal strength indication (RSSI) value. The range of possible RSSI values varies greatly depending on the device in question (i.e. some devices return vales from 0 to 100, some return values from -200 to 0, etc.), and therefore each device must normalize the RSSI values before it makes decisions.
+
+In order to predict when WiFi quality is degrading to the point that it is better to switch to cellular data than remain connected to WiFi, the device monitors the signal strength over time. When the signal strength drops below a certain threshold for a certain amount of time (on our device, -80 RSSI units for 6.9 seconds), the system disconnects from WiFi and switches to cellular data. Ideally, this switch will result in no packet loss, as outgoing traffic is immediately diverted from WiFi to the cellular data network.
+
+The system is active whenever WiFi is being used, and runs as a background process.

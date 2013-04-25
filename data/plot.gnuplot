@@ -1,11 +1,11 @@
-set term post eps color
+#set term post eps color
 
-#set output 'sigStrength.eps'
-#set xlabel "Test Number"
-#set ylabel "Signal Strength (dB)"
-#plot "./sigStrentgLeavingEnteringEECS.txt" notitle #w lines smooth bezier#, \
-#"./sigStrentgLeavingEnteringEECS.txt"
-#pause -1
+set output 'sigStrength.eps'
+set xlabel "Test Number"
+set ylabel "Signal Strength (dB)"
+plot "./sigStrentgLeavingEnteringEECS.txt" notitle #w lines smooth bezier#, \
+"./sigStrentgLeavingEnteringEECS.txt"
+pause -1
 
 set ytics ("No" 0, "Yes" 1)
 set yrange [-0.2:1.2]
@@ -15,15 +15,15 @@ set xlabel "Packet Number"
 set output "leavingCourtyardsWithPolicy.eps"
 plot "./lolData.csv" every ::0::2500 notitle w dots # leaving apartment, with policy
 
-#set output 'paneraWithPolicy.eps'
-#plot "./paneraWithPolicy.csv" notitle w dots
-##pause -1
-#set output 'paneraNoPolicy.eps'
-#plot "./paneraNoPolicy.csv" notitle w dots
-##pause -1
+set output 'paneraWithPolicy.eps'
+plot "./paneraWithPolicy.csv" notitle w dots
+pause -1
+set output 'paneraNoPolicy.eps'
+plot "./paneraNoPolicy.csv" notitle w dots
+pause -1
 set output 'leavingCourtyardsNoPolicy.eps'
 plot "./data.csv" every ::0::2500 notitle w dots # leaving apartment
-#pause -1
+pause -1
 
 #set style data histogram
 #set style fill solid border
