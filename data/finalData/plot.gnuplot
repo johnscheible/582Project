@@ -10,11 +10,12 @@
 # 	6) The solved courtyards problem
 
 # Uncomment for eps output, as well as the 'set output' lines below
-set term post eps color
+#set term post eps color
+set term png
 
 # 1)===========================================================================
 
-set output 'sigStrength.eps'
+set output 'sigStrength.png'
 set xlabel "Test Number"
 set ylabel "Signal Strength (dB)"
 plot "./sigStrengthLeavingEnteringEECS.txt" notitle
@@ -63,27 +64,27 @@ set style line 3 lt 1 lw 1 pt 1 linecolor rgb "green"
 
 # 3)===========================================================================
 
-set output 'paneraNoPolicy.eps'
+set output 'paneraNoPolicy.png'
 plot "./paneraNoPolicy.txt" using 1 title "3G" w lines ls 1, \
 		 "./paneraNoPolicy.txt" using 2 title "WiFi" w lines ls 2
 pause -1
 
 # 4)===========================================================================
 
-set output 'paneraWithPolicy.eps'
+set output 'paneraWithPolicy.png'
 plot "./paneraWithPolicy.txt" using 1 title "3G" w lines ls 1
 pause -1
 
 # 5)===========================================================================
 
-set output 'leavingCourtyardsNoPolicy.eps'
+set output 'leavingCourtyardsNoPolicy.png'
 plot "courtyardsRoundTripNoPolicy.txt" every ::0::2500 using 2 title "3G" w lines ls 1, \
 		 "courtyardsRoundTripNoPolicy.txt" every ::0::2500 using 1 title "WiFi" w lines ls 2
 pause -1
 
 # 6)===========================================================================
 
-set output "leavingCourtyardsWithPolicy.eps"
+set output "leavingCourtyardsWithPolicy.png"
 plot "what.txt" every ::0::1115 using 1:3 title "3G" w lines ls 1, \
 		 "what.txt" every ::0::2500 using 1:2 title "WiFi" w lines ls 2, \
 		 "what.txt" every ::1115::2500 using 1:4 notitle w lines ls 1
