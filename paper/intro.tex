@@ -2,9 +2,11 @@
 \label{sec:intro}
 
 [TODO - I'd like to add some more statistics here]
+\noindent[TODO - unify naming/terminology]
+\noindent[TODO - tense]
 
 \noindent
-In the era of always-connected mobile devices, a new breed of application has arisen that depends on a constant connection between mobile devices and the Internet. Users have come to rely heavily on the always-connected property of these applications for regular and time-sensetive information. Applications that utilize always-on connectivity generally fall into these categories:
+In the era of always-connected mobile devices, a new breed of application has arisen that depends on a constant connection between mobile devices and the Internet. Users have come to rely heavily on the always-connected property of these applications for regular and time-sensitive information. Applications that utilize always-on connectivity generally fall into these categories:
 
 \begin{description}
 \item[Notification-based] Applications relying on ``push notifications" to alert users to pertinent, time-sensitive information. This class of applications includes email clients alerting users to a new email, social applications (e.g. Facebook, social games) updating users on relevant events, messaging applications (e.g. iMessage, KaokaoTalk), applications capable of providing emergency alerts, and other services that must present information as it becomes available.
@@ -24,7 +26,7 @@ Mobile devices therefore aim to provide 100\% Internet connectivity. Connections
 \item Cellular connections cost users more money to use than WiFi.
 \end{itemize}
 
-While these may have been true at one time, they are becoming less and less so every day. With the advent of widely-available technologies like 4G LTE, the gap between WiFi and cellular connection speed continually shrinks [TODO - cite]. This policyditionally, data has become cheaper over time, and users' ``data cap" has become less of an issue [TODO - cite]. This policyerefore, these priorities should no longer be the deciding factors in choosing whether to connect to the Internet via WiFi or cellular data network.
+While these may have been true at one time, they are becoming less and less so every day. With the advent of widely-available technologies like 4G LTE, the gap between WiFi and cellular connection speed continually shrinks [TODO - cite]. This Additionally, data has become cheaper over time, and users' ``data cap" has become less of an issue [TODO - cite]. This Therefore, these priorities should no longer be the deciding factors in choosing whether to connect to the Internet via WiFi or cellular data network.
 
 The ``WiFi first and always" policy creates serious problems for always-connected applications. In many everyday scenarios, Internet connectivity is lost while mobile devices cling to unusable or weak WiFi networks. In these scenarios, Internet connectivity could be maintained by utilizing a cellular data connections, but the device instead loses connectivity because it tries to connect to an unusable WiFi network.
 
@@ -36,10 +38,10 @@ Three specific instances of this problem stand out, as they affect the average m
 \item The mobile device remains connected to a WiFi network after the network becomes too weak to send data over.
 \end{enumerate}
 
-In all of these cases, mobile devices running the Android or iOS operating systems will often remain disconnected until the user manually intervenes by forcing the device to abondon WiFi (usually by disabling the device's WiFi feature entirely). This can lead to downtime anywhere between less than a second to as long as it takes for a user to recognize and resolve the issue affecting the mobile device. In each of these scenarios, Internet connectivity could be maintained by utilizing the cellular connection. The policies we propose to resolve these problems are:
+In all of these cases, mobile devices running the Android or iOS operating systems will often remain disconnected until the user manually intervenes by forcing the device to abandon WiFi (usually by disabling the device's WiFi feature entirely). This can lead to downtime anywhere between less than a second to as long as it takes for a user to recognize and resolve the issue affecting the mobile device. In each of these scenarios, Internet connectivity could be maintained by utilizing the cellular connection. The policies we propose to resolve these problems are:
 
 \begin{description}
 \item[Internet Access Testing] In order to address problems 1 and 2, we propose to test and judge the usability of WiFi networks before making decisions about whether to connect to them. The goal of this policy is to make informed decisions about whether connecting to a WiFi network can be done seamlessly (i.e. while maintaining connectivity) or whether it will result in loss of Internet connectivity.
-\item[Predictive WiFi Abandonment] In order to address problem 3, we propose to periodically sample the strength of the WiFi network the mobile device is currently connected to. Using this data, we can predict whether a WiFi connection will become too weak to function, and swith to a cellular data connection before Internet connectivity is lost.
+\item[Predictive WiFi Abandonment] In order to address problem 3, we propose to periodically sample the strength of the WiFi network the mobile device is currently connected to. Using this data, we can predict whether a WiFi connection will become too weak to function, and switch to a cellular data connection before Internet connectivity is lost.
 \end{description}
 
