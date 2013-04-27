@@ -1,20 +1,6 @@
-1) Test WiFi-only connection strength during walk to bus stop and back
-2) Set preference to 3G. Make the same walk.
-	- If we stay connected to 3G the whole time, we have full control
-	- If not, we have to turn off WiFi when Android overrules us.
-3) Implement policies
-4) Run same tests with policies
-
-
-
-KEVIN -
-1) Get 582 stuff working! Collect data!
-2) Make a poster!
-3) Write paper!
-4) Write 376 paper!
-5) Stats final. Meh.
-6) Get a new flight, apparently....
-
+Add Citations:
+	http://dl.acm.org/citation.cfm?id=1811094&bnc=1	
+	http://dl.acm.org/citation.cfm?id=1921203&bnc=1
 
 ============================PAPER EVALUATION============================
 Grading based on "Can we":

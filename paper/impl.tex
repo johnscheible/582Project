@@ -33,6 +33,11 @@ Given a certain strength threshold (-80 RSSI units) and time threshold (6.9 seco
 
 This data was kept in a single variable: the count of consecutive signal strength readings below the strength threshold. Whenever the signal strength exceed the strength threshold, the count was reset to 0.
 
+\begin{figure}
+	\includegraphics[width=0.5\textwidth]{sigStrength}
+	\caption{TODO}
+\end{figure}
+
 Because signal strength is sampled approximately every 100 milliseconds, the duration of signal strength below the strength threshold in seconds can be calculated by multiplying the sub-strength reading count by 0.1. For example, 42 consecutive packets below the strength threshold corresponds to $ 42 \cdot 0.1 = 4.2 $ seconds.
 
 When the calculated time exceeds the time threshold, the system determines that the connection is becoming weaker, and will likely degrade past the point of usability. It then disconnects from the WiFi network, forcing the device to utilize its cellular data connection.
