@@ -1,23 +1,23 @@
 \section{Evaluation}
 \label{sec:eval}
 
-Our application, in addition to implementing our WiFi policies, would connect to a server and send a UDP packet every 100 milliseconds, stamped with a sequence number. To evaluate the performance our policies, we performed several experiments, with and without the appropriate policies enabled. For each experiment we inspected which packets were received to determine how many packets were dropped.
+Our application, in addition to implementing our WiFi policies, would connect to a server and send a UDP packet every 100 milliseconds, stamped with a sequence number. To evaluate the performance of our policies, we performed several experiments, both with and without the policies enabled. For each experiment, we inspected which packets were received to determine how many packets were dropped, and for how long Internet connectivity was lost.
 
-We present the setup and results from two experiments here. Each were inspired by the second and third problem situations presented. To test the Internet Access Testing policy, aproached a store with complimentary WiFi requireing authentication. For Predictive WiFi Abandonment, we left a WiFi network which was known to one of the authors to lost internet connectivity as a smartphone left [TODO: This is worded terribly][TODO: Better names for subsections...]
+We present the setup and results from two experiments here. They were designed to address the second and third problem situations presented. In order to test the internet access testing policy, we aproached a store with complimentary WiFi requireing authentication. For predictive WiFi abandonment, we tested on WiFi network that was known to one of the authors to cause clingly WiFi behavior. [TODO: Better names for subsections...]
 
 \subsection{Internet Access Testing - The Panera Test}
-The problem of connecting to WiFi, without user intervention, that is unable to reach the internet is not cleanly measured. The impact of this issue varies on the users habits and the time spent within the network. To demonstrate this issue, as well as our solution we designed a realistic scenario to carry out. 
+It is inherently difficult to objectively test the problem presented by WiFi networks requiring authentication. The duration of disconnection varies depending on the users habits and the time spent within range of the network. For example, some users might spend only 2 minutes connected to unusable WiFi before they realize they have to authenticate; other users might take 10 minutes or 30 minutes. Therefore, to best demonstrate this issue, as well as our solution, we opted to test a realistic scenario that we believe represents a typical user experience.
 
-The experiment started across a parking lot, connected to AT\&T's HSPA network. We approached a store with public WiFi, which the phone would connect to once in range. Upon arriving at the door, we waited for 30 seconds and then attempted to access Google.com, waiting 10 seconds after successfully loading the page (including any delay from authentication).
+The mobile device and user began the experiment across the street from an establishment with authentication-requiring WiFi. It was pinging a server on the Internet via AT\&T's HSPA network. The user approached the establishment, and the phone connected to WiFi when it felt that the signal was sufficiently strong. Upon arriving at the door, the user waited for 30 seconds and then attempted to access google.com, and waited 10 seconds after successfully loading the page (including any delay from authentication).
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{paneraNoPolicy}
 	\caption{TODO}
 \end{figure}
 
-Figure 2 shows, as expected, we did not receive a single packet from the time we walked within range of the WiFi to the time we attempted to access Google and accepted the store's terms and conditions. If a user left their phone in their pocket, rather than checking it as impulsively as the authors, they may never notice their phone had connected. In this case they wouldn't receive any incoming notifications until they left the store.
+Figure 2 shows, as expected, that we did not receive a single packet from the time we walked within range of the WiFi network to the time we attempted to access google.com and accepted the establishment's terms and conditions. If a user were leave his/her phone in his/her pocket - rather than checking it as impulsively as the authors - he/she may never notice that the phone had connected to unusable WiFi. In this case, they would not receive any incoming data until they left the establishment.
 
-When run with Bouncer, the phone recieves a 302 HTTP code (a redirect to the store's terms and conditions page) after attempting to reach umich.edu. As per the implemented Bouncer policy, the phone then disconnects and reverts to the cell network. Figure 3 shows our drastically reduced downtime, present only because our implementation limits us from checking a WiFi network's Internet connection before the OS tears down the mobile connection.
+When run with Bouncer, the phone recieved a 302 HTTP code (a redirect to the establishment's terms and conditions page) after attempting to reach umich.edu. As per the implemented Bouncer policy, the phone then disconnected and reverted to the cellular data network. Figure 3 shows our drastically reduced downtime. It is worth noting that the limited downtime exists only because our implementation prevents us from checking a WiFi connection's Internet access before the OS tears down the cellular connection. Ideally, the network would be tested, and the device would decide to remain on the cellular network, leading to no downtime.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{paneraWithPolicy}
@@ -25,17 +25,16 @@ When run with Bouncer, the phone recieves a 302 HTTP code (a redirect to the sto
 \end{figure}
 
 \subsection{Predictive WiFi Abandonment - The Courtyards Test}
-[TODO: Have Kevin check that this is a good description]
-To evaluate our policy for disconnecting from poor WiFi connection, we began in a WiFi network which the authors had experienced disconnection issues from. From a starting position, connected to WiFi, we took a set route, leaving the range of the network. The route took us well out of the range of the access point, testing the transition from WiFi to cellular data.
+In order to evaluate our predictive WiFi abaondonment policy, the device was tested using a WiFi network with which the authors have experienced disconnection ``clingyness" issues. From a starting position near a WiFi access point (an Apple Airport Express), connected to WiFi, the user took a set route, leaving the range of the network. The route took us well out of the range of the access point, testing the transition from WiFi to cellular data.
 
-The stock policy resulted in little to no connectivity at the perimeter of the network range. As seen in figure 4, a substantial number of packets are dropped before finally transitioning to the cellular connection. Another burst of packets are lost shortly after, when the phone tries to reconnect to the network it just left. This demonstrates a pattern the authors experienced which interrupts streaming content, and provides a generally poor user experience.
+The stock policy resulted in clinging to the WiFi network while there was little to no connectivity at the perimeter of the network's range. As seen in figure 4, a substantial number of packets were dropped before the device transitioned to the cellular connection. Another burst of packets are lost shortly after, when the phone tries to reconnect to the network it just left. This demonstrates a pattern the authors experienced which interrupts streaming content, and provides a generally poor user experience.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{leavingCourtyardsNoPolicy}
 	\caption{TODO}
 \end{figure}
 
-When run with the Abandon Ship policy, as demonstrated by figure 5, the phone disconnects much more promptly from WiFi. It then stays on the cell network maintaining a stable connection. 
+When run with the Abandon Ship policy, as demonstrated by figure 5, the phone disconnects much more promptly from WiFi. It then stays on the cellular network, maintaining a stable connection.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{leavingCourtyardsWithPolicy}

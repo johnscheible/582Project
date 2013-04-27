@@ -4,6 +4,7 @@ all:
 	pdflatex paper
 	bibtex paper
 	pdflatex paper
+	pdflatex paper
 
 clean:
 	/bin/rm -f paper.pdf *.dvi *.aux *.ps *~ *.log *.out *.ent
