@@ -1,45 +1,43 @@
 \section{Implementation}
 \label{sec:impl}
 
-We chose to implement and run our policies on a Samsung Galaxy Nexus running Android 4.2 Jelly Bean. The Galaxy Nexus is capable of connecting to 3G networks and came out it late 2011 and is widely used today.
+We chose to implement and run our policies on a Samsung Galaxy Nexus running Android 4.2 Jelly Bean. The Galaxy Nexus runs on AT\&T's 3G HSPA+ network. It was released late 2011 and is widely used today.
 
-Originally, we aimed to modify Android's source code in order to implement our policies. This would have given us a great degree of control over Android's WiFi decision making policies. However, Android's source is both poorly documented and poorly understood outside of its group of core developers as Google. Therefore, our best option became implementing our policies as an Android application running on top of the OS's preexisting WiFi management policies.
+Originally, we aimed to modify Android's source code in order to implement our policies. This would have given us a great degree of control over Android's WiFi decision making policies. However, Android's source is both poorly documented and poorly understood outside of its group of core developers as Google. Therefore, our best option became implementing our policies as an Android application running on top of the OS's pre-existing WiFi management policies.
 
-As we will discuss, this did create sub-optimal conditions for the policies. Because the application ran on top of Android's WiFi management code, we could not implement our policies in a completely ideal manner. We will make clear how this affected our implementation, and how we expected it to affect our evaluation.
+As we will discuss, this created sub-optimal conditions for the policies. Because the application ran on top of Android's WiFi management code, we could not implement our policies in an ideal manner. We will make clear how this affected our implementation, and how we expected it to affect our evaluation.
 
-The application itself allows users to select one of three policies: internet access testing (Bouncer), predictive WiFi abandonment (AbandonShip), and default Android WiFi policies. When the policy was selected, an Android broadcast receiver was registered [TODO - terminology?]. This broadcast receiver was activated whenever the state of the device's network connection changed (i.e. a WiFi connection was established). These receivers would activate the chosen policy when it became pertinent.
+The application itself allows users to select one of three policies: internet access testing (Bouncer), predictive WiFi abandonment (AbandonShip), and unmodified Android WiFi policies. When the policy was selected, an Android broadcast receiver was registered [TODO - terminology?]. This broadcast receiver was activated whenever the state of the device's network connection changed (i.e. a WiFi connection was established). These receivers would activate the chosen policy when it became pertinent.
 
-In order to evaluate how each of these policies affected Internet connectivity, the application sent UDP packets approximately every 100 milliseconds to a server on the Internet. This allowed us to gather data about when WiFi connections were usable and providing reliable internet connectivity. [TODO - redundant with evaluation?]
+% In order to evaluate how each of these policies affected Internet connectivity, the application sent UDP packets approximately every 100 milliseconds to a server on the Internet. This allowed us to gather data about when WiFi connections were usable and providing reliable internet connectivity. [TODO - redundant with evaluation?]
 
 \subsection{Internet Access Testing - Bouncer}
 Our implementation of internet access testing, Bouncer, was written as a thread spawned by the broadcast receiver. The alternative was to run it as a service, Android's analogue to a background process; however, the thread has to be active only as long as network testing occurs (in our case, about 3 seconds). Therefore, we felt that running it as a service would be wasteful.
 
-Optimally, we would have tested new networks as the device came into contact with them, joining one if and only if it passes all testing. However, because Bouncer was implemented as an application, not at the operating system level, we could not prevent the device from joining WiFi networks.
+The thread attempted to ping a well known web site (umich.edu). If the server responded with an HTTP OK response code (200), the thread would sleep for 3 seconds before running again. This was repeated twice. If a test failed, the connection was abandoned, and the device was forced to use its cellular data connection.
 
-Our solution was to, as soon as the device joins a new WiFi network, test the network. If all tests are passed, the thread ends and the WiFi connection is left untouched. However, if a network fails the test, we boot the device of the network, forcing it to use the cellular data connection.
+Optimally, we would have tested new networks as the device came into contact with them, before tearing down the cell network connection, joining one if and only if it passes all testing. However, because Bouncer was implemented as an application, not at the operating system level, we could not prevent the device from joining WiFi networks.
 
-Were the policy optimally implemented, we would have expected no downtime, assuming a usable cellular data connection. All WiFi Internet access testing would occur without disconnecting from cellular data, while applications continue to use the cellular data connection. The switch would then be made if and only if all tests were passed by the WiFi network.
+Our solution was to, as soon as the device joined a new WiFi network, test its connectivity. If all tests were passed, the thread ended and the WiFi connection was left untouched. However, if a network failed any of the tests, we disconnected from the network, forcing it to use the cellular data connection.
 
-However, because of the limitations imposed upon us, we had to force the device to disconnect from unsuitable WiFi networks after Android had decided to switch them. This, we expected, would lead to downtime while the device was connected to an unsuitable network and as the device moved back from WiFi to cellular data [TODO - mention in evaluation!]. Again, were we to have greater access to Android's internals, we would be able to prevent utilization of the connection entirely until it had passed our tests. Because we could not prevent Android from connecting to unsuitable networks, we were forced to break the WiFi connection after it had been established, which would result in downtime when the network is unusable.
+Were the policy optimally implemented, we would have expected no downtime, assuming a usable cellular data connection. All WiFi Internet access testing would occur without disconnecting from cellular data, allowing applications to continue to use the cellular data connection. The switch would then be made if and only if all tests were passed by the WiFi network.
 
-We would also optimally be able to reestablish the cellular data connection's Internet access, before swapping network traffic to the cellular data connection. This would, ideally, result in no downtime, as a connection would constantly be available over which traffic could be sent.
-
-The tests themselves attempted to establish an HTTP connection to a well known web site (umich.edu). If the server responded with a 200 (HTTP OK) response, the thread would sleep for 3 seconds before running again. This was repeated twice. If a test failed, the connection was abandoned, and the device was forced to use its cellular data connection.
+However, because of the limitations imposed upon us, we had to force the device to disconnect from unsuitable WiFi networks after Android had decided to join them. This, we expected, would lead to downtime while the device was connected to an unsuitable network and as the device moved back from WiFi to cellular data [TODO - mention in evaluation!]. Again, were we to have greater access to Android's internals, we would be able to prevent utilization of the WiFi connection entirely until it had passed our tests.
 
 \subsection{Predictive WiFi Abandonment - AbandonShip}
-Our implementation of predictive WiFi abandonment, AbandonShip, was written as an Android service spawned by the broadcast receiver. When a WiFi connection was established, it would begin monitoring the strength of the WiFi network's signal strength over time.
+Our implementation of predictive WiFi abandonment, AbandonShip, was written as an Android service spawned by the broadcast receiver. When a WiFi connection was established, it would begin monitoring the WiFi network's signal strength over time.
 
-Given a certain strength threshold (-80 RSSI units) and time threshold (6.9 seconds), the service monitored signal strength in order to determine whether the signal had degraded below the strength threshold for a time equal to or greater than the time threshold.
+Given a certain strength threshold (-80 RSSI units) and timeout (6.9 seconds), the service monitored signal strength in order to determine whether the signal had degraded below the strength threshold for a time equal to or greater than the timeout. We estimated these experimental values from data, such as that presented in figure 1, demonstrating WiFi signal strength as recorded by Android. 
 
-This data was kept in a single variable: the count of consecutive signal strength readings below the strength threshold. Whenever the signal strength exceed the strength threshold, the count was reset to 0.
+This data was kept in a single variable: the count of consecutive signal strength readings below the strength threshold. Whenever the signal strength exceeded the strength threshold, the count was reset to 0.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{sigStrength}
 	\caption{TODO}
 \end{figure}
 
-Because signal strength is sampled approximately every 100 milliseconds, the duration of signal strength below the strength threshold in seconds can be calculated by multiplying the sub-strength reading count by 0.1. For example, 42 consecutive packets below the strength threshold corresponds to $ 42 \cdot 0.1 = 4.2 $ seconds.
+Because signal strength was sampled approximately every 100 milliseconds, the duration of signal strength below the strength threshold in seconds could be calculated by multiplying the sub-strength reading count by 0.1. For example, 42 consecutive packets below the strength threshold corresponded to $ 42 \cdot 0.1 = 4.2 $ seconds.
 
-When the calculated time exceeds the time threshold, the system determines that the connection is becoming weaker, and will likely degrade past the point of usability. It then disconnects from the WiFi network, forcing the device to utilize its cellular data connection.
+When the calculated time exceeded the timeout, the system determineed that the connection was becoming weaker, and would likely degrade past the point of usability. It then disconnected from the WiFi network, forcing the device to utilize its cellular data connection.
 
 Like Bouncer, this implementation would have benefited from a lower-level implementation. However, the hindrance on AbandonShip is not as great. The only problem is that Android does not know to expect the disconnection from WiFi. The sudden disconnection ``surprises" it, and, as we will see in the evaluation, causes some downtime as Android switches to the cellular data network.

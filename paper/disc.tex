@@ -1,7 +1,7 @@
 \section{Discussion}
 \label{sec:disc}
 
-One effect of the policies worth addressing is the effect that it has on TCP sessions. Our tests were carried out using UDP to evaluate connectivity; however, a TCP session, which is far more the common case for non-streaming applications, relies on maintaining a TCP connection. If a TCP connection is lost, a new connection must be established, which costs time and hinders user experience. If the client's IP suddenly changes, the TCP session becomes invalid. In the case of Internet access testing, the system is likely to benefit users. They are less likely to join a new WiFi network and thus less likely to have to initialize a new TCP connection. [TODO - this paragraph needs citations] [TODO - should ``session" be ``connection" in this paragraph?]
+One effect of the policies worth addressing is the effect that it has on TCP sessions. Our tests were carried out using UDP to evaluate connectivity; however, a TCP session, which is far more the common case for non-streaming applications, relies on maintaining a TCP connection. If a TCP connection is lost, a new connection must be established, which costs time and hinders user experience. If the client's IP suddenly changes, the TCP session becomes invalid. In the case of Internet access testing, the system is likely to benefit users; they are less likely to join a new WiFi network and thus less likely to have to initialize a new TCP connection. [TODO - this paragraph needs citations]
 
 However, in the case of preemptive WiFi abandonment, the chance that a TCP connection will be torn down increases. For common web-based applications where TCP is the method of information exchange (which includes regular web browsing), predicting WiFi abandonment may force a new session to be established. This problem is largely mitigated by the fact that, if the device's connection to WiFi is about to become unusable, a new TCP connection will have to be established anyway.
 
@@ -13,8 +13,10 @@ Due to limited (and often nonexistent) documentation of the Android source code,
 
 This somewhat limited our ability to fully control the mobile device's network management policies because our software ran concurrently with Android's built-in network management. Thus, while we were able to control connectivity, it was impossible to prevent Android from making its own decisions about network connectivity.
 
-Therefore, in cases 1 and 2, our application could not \emph{prevent} connection to unsuitable WiFi networks. Instead, when such a connection occurred, we detected the connection and terminated it as fast as Android's framework allows for. In case 3, Android's existing WiFi management policies did not interfere with our policies because we propose to drop connections \emph{before} Android acts.
+Therefore, in cases 1 and 2, our application could not prevent connection to unsuitable WiFi networks. Instead, when such a connection occurred, we detected the connection and terminated it as fast as Android's framework allows for. In case 3, Android's existing WiFi management policies did not interfere with our policies because we propose to drop connections before Android acts.
 
 Additionally, because we only worked with Android (as the next most popular mobile device operating system, iOS, offers no control of WiFi/cell connection handling), it is possible that our data is specific to the domain of Android mobile devices. Other systems may have different WiFi/cell connection management policies.
 
 Additionally, different mobile devices may require different policies. We tested our policies on a single phone, but other devices may require adjustments such as altered time or signal strength thresholds. Also, devices capable of more accurately sensing signal strength are inherently better suited to making decisions based on such data.
+
+We also acknowledge that our policies may adversly affect battery life. Therefore, a follow-up study of the effects of the policies on battery life is necessary.
