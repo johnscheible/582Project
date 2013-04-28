@@ -19,4 +19,6 @@ Additionally, because we only worked with Android (as the next most popular mobi
 
 Additionally, different mobile devices may require different policies. We tested our policies on a single phone, but other devices may require adjustments such as altered time or signal strength thresholds. Also, devices capable of more accurately sensing signal strength are inherently better suited to making decisions based on such data.
 
+Because our policies involve adhering more strongly to cellular data connections, it is possible that WiFi connections that will improve in the near future will be ignored. We considered using a timeout to manage when to re-test WiFi networks for suitability, but the implementation did not make it into this paper. Thus, Android is capable of joining usable WiFi networks that our policies will sometimes ignore.
+
 We also acknowledge that our policies may adversly affect battery life. Therefore, a follow-up study of the effects of the policies on battery life is necessary.

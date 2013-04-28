@@ -34,7 +34,7 @@ This data was kept in a single variable: the count of consecutive signal strengt
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{sigStrength}
-	\caption{TODO}
+	\caption{The WiFi signal strength recorded by an Android phone on a walk through a building, accross a street, and back into the building. The ``humps" in the data are created when the device switches to a stronger access point on the same network. The segment of the graph marked A represents no WiFi connection whatsoever, when the phone was accross the street and disconnected from WiFi. This data was used to determine a reasonable timeout and strength threshold.}
 \end{figure}
 
 Because signal strength was sampled approximately every 100 milliseconds, the duration of signal strength below the strength threshold in seconds could be calculated by multiplying the sub-strength reading count by 0.1. For example, 42 consecutive packets below the strength threshold corresponded to $ 42 \cdot 0.1 = 4.2 $ seconds.
