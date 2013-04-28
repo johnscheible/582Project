@@ -14,7 +14,7 @@ Notification-based applications can likely tolerate a few seconds of downtime, a
 
 Streaming applications, however, cannot tolerate such downtime. \emph{Real-time} streaming applications such as VOIP that cannot buffer for more than a few seconds absolutely cannot tolerate it. VOIP is impractical when the connection is dropped for more than a few seconds at a time. Applications that can buffer data, such as streaming video and audio applications, can tolerate some downtime, although in many cases this is limited to a number of seconds.
 
-For these and other reasons, mobile devices aim to provide 100\% Internet connectivity uptime. Connections are either established over a cellular data network, such as GSM or LTE, or a WiFi connection. The general policy for choosing which connection to use is simple: always prefer usable WiFi connections over cellular data [TODO - cite]. This policy is presumably based on a set of assumptions:
+For these and other reasons, mobile devices aim to provide 100\% Internet connectivity uptime. Connections are either established over a cellular data network, such as GSM or LTE, or a WiFi connection. Modern smartphone operating systems will connect to any recognized WiFi network when in range of it \cite{Google2013}. This policy is presumably based on a set of assumptions:
 
 \begin{itemize}
 \item WiFi connections are always faster than cellular connections.
