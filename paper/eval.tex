@@ -43,9 +43,9 @@ When run with the Abandon Ship policy, as demonstrated by figure 5, the phone di
 	\caption{Departing a WiFi network without AbandonShip: A) As the WiFi signal becomes poor and starts to drop packets, AbandonShip decides to disconnect and the device moves onto the cellular network, which is more reliable.}
 \end{figure}
 
-In order to quantify the difference between AbandonShip and Android's default policies, we ran another test involving a single WiFi access point (an Apple Airport Express). Walking away from the access point until the phone disconnected from WiFi, we recorded the number of packets lost between the weakening of the WiFi signal and reconnection to the cellular data network. Figure 6 shows the average number of packets lost with and without AbandonShip running. AbandonShip significantly reduced the number of packets lost, leading to a substantially better user experience.
+In order to quantify the difference between AbandonShip and Android's default policies, we ran another test involving a single WiFi access point (an Apple Airport Express). Walking away from the access point until the phone disconnected from WiFi, we recorded the number of packets lost between the weakening of the WiFi signal and reconnection to the cellular data network. Figure 6 shows the average number of packets lost with and without AbandonShip running. On average, AbandonShip lost only 39.7\% as many packets as Android's default policies. This leads to a substantially better user experience.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{bars}
-	\caption{The average number of packets lost while exiting a WiFi network and moving to the cellular connection. With a 95\% confidence interval, we can reasonably state that AbandonShip significantly reduces the number of packets lost. Because AbandonShip reduces the time during which the Internet is unreachable, user experience is improved.}
+	\caption{The average number of packets lost while exiting a WiFi network and switching to a cellular connection. With a 95\% confidence interval, we can reasonably state that AbandonShip significantly reduces the number of packets lost. Because AbandonShip reduces the time during which the Internet is unreachable, user experience is improved.}
 \end{figure}
