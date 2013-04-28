@@ -13,7 +13,7 @@ The application itself allows users to select one of three policies: internet ac
 % In order to evaluate how each of these policies affected Internet connectivity, the application sent UDP packets approximately every 100 milliseconds to a server on the Internet. This allowed us to gather data about when WiFi connections were usable and providing reliable internet connectivity.
 
 \subsection{Internet Access Testing - Bouncer}
-Our implementation of internet access testing, Bouncer, was written as a thread spawned by the broadcast receiver to perform the necessary tests. This was choosen over running the policy as a service, an Android construct used for doing long-running background work. Since the thread has to be active only as long as network testing occurs (in our case, about 3 seconds), we felt that running it as a service would be wasteful.
+Our implementation of internet access testing, Bouncer, was written as a thread spawned by the broadcast receiver to perform the necessary tests. This was chosen over running the policy as a service, an Android construct used for doing long-running background work. Since the thread has to be active only as long as network testing occurs (in our case, about 3 seconds), we felt that running it as a service would be wasteful.
 
 The thread attempted to ping a well known web site (umich.edu). If the server responded with an HTTP OK response code (200), the thread would sleep for 3 seconds before running again. This was repeated twice. If a test failed, the connection was abandoned, and the device was forced to use its cellular data connection.
 
@@ -34,12 +34,12 @@ This data was kept in a single variable: the count of consecutive signal strengt
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{sigStrength}
-	\caption{The WiFi signal strength recorded by an Android phone on a walk through a building, accross a street, and back into the building. The ``humps" in the data are created when the device switches to a stronger access point on the same network. The segment of the graph marked A represents no WiFi connection whatsoever, when the phone was accross the street and disconnected from WiFi. This data was used to determine a reasonable timeout and strength threshold.}
+	\caption{The WiFi signal strength recorded by an Android phone on a walk through a building, across a street, and back into the building. The ``humps" in the data are created when the device switches to a stronger access point on the same network. The segment of the graph marked A represents no WiFi connection whatsoever, when the phone was across the street and disconnected from WiFi. This data was used to determine a reasonable timeout and strength threshold.}
 \end{figure}
 
 Because signal strength was sampled approximately every 100 milliseconds, the duration of signal strength below the strength threshold in seconds could be calculated by multiplying the sub-strength reading count by 0.1. For example, 42 consecutive packets below the strength threshold corresponded to $ 42 \cdot 0.1 = 4.2 $ seconds.
 
-When the calculated time exceeded the timeout, the system determineed that the connection was becoming weaker, and would likely degrade past the point of usability. It then disconnected from the WiFi network, forcing the device to utilize its cellular data connection.
+When the calculated time exceeded the timeout, the system determined that the connection was becoming weaker, and would likely degrade past the point of usability. It then disconnected from the WiFi network, forcing the device to utilize its cellular data connection.
 
-Like Bouncer, this implementation would have benefited from a lower-level implementation. However, the hindrance on AbandonShip is not as great. The only problem is that Android does not know to expect the disconnection from WiFi. The sudden disconnection ``surprises" it, and, as we will see in the evaluation, causes some downtime as Android switches to the cellular data network. Had we access to lower level networking, we could start re-establishing the cellular data connection part way through the time out, so that we could move seemlessly to it when the WiFi was deemed unusable
+Like Bouncer, this implementation would have benefited from a lower-level implementation. However, the hindrance on AbandonShip is not as great. The only problem is that Android does not know to expect the disconnection from WiFi. The sudden disconnection ``surprises" it, and, as we will see in the evaluation, causes some downtime as Android switches to the cellular data network. Had we access to lower level networking, we could start re-establishing the cellular data connection part way through the time out, so that we could move seamlessly to it when the WiFi was deemed unusable
 .

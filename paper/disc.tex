@@ -1,7 +1,7 @@
 \section{Discussion}
 \label{sec:disc}
 
-One effect of the policies worth addressing is the effect that it has on TCP sessions. Our tests were carried out using UDP to evaluate connectivity; however, a TCP session, which is far more the common case for non-streaming applications, relies on maintaining a TCP connection. If a TCP connection is lost, a new connection must be established, which costs time and hinders user experience. If the client's IP suddenly changes, the TCP session becomes invalid. In the case of Internet access testing, the system is likely to benefit users; they are less likely to join a new WiFi network and thus less likely to have to initialize a new TCP connection. [TODO - this paragraph needs citations]
+One effect of the policies worth addressing is the effect that it has on TCP sessions. Our tests were carried out using UDP to evaluate connectivity; however, a TCP session, which is far more the common case for non-streaming applications, relies on maintaining a TCP connection. If a TCP connection is lost, a new connection must be established, which costs time and hinders user experience. If the client's IP suddenly changes, the TCP session becomes invalid. In the case of Internet access testing, the system is likely to benefit users; they are less likely to join a new WiFi network and thus less likely to have to initialize a new TCP connection.
 
 However, in the case of preemptive WiFi abandonment, the chance that a TCP connection will be torn down increases. For common web-based applications where TCP is the method of information exchange (which includes regular web browsing), predicting WiFi abandonment may force a new session to be established. This problem is largely mitigated by the fact that, if the device's connection to WiFi is about to become unusable, a new TCP connection will have to be established anyway.
 
@@ -21,4 +21,4 @@ Additionally, different mobile devices may require different policies. We tested
 
 Because our policies involve adhering more strongly to cellular data connections, it is possible that WiFi connections that will improve in the near future will be ignored. We considered using a timeout to manage when to re-test WiFi networks for suitability, but the implementation did not make it into this paper. Thus, Android is capable of joining usable WiFi networks that our policies will sometimes ignore.
 
-We also acknowledge that our policies may adversly affect battery life. Therefore, a follow-up study of the effects of the policies on battery life is necessary.
+We also acknowledge that our policies may adversely affect battery life. Therefore, a follow-up study of the effects of the policies on battery life is necessary.
