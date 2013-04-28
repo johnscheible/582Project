@@ -12,7 +12,7 @@ The mobile device and user began the experiment across the street from an establ
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{paneraNoPolicy}
-	\caption{TODO}
+	\caption{Approaching authentication requring WiFi withot Bouncer: A) The device detects the establishment's WiFi and connects, tearing down its mobile connection. B) The user arrives at the store. C) After waiting 30 seconds the user attempts to access umich.edu. D) After loading the terms and conditions page and accepting the device finally establishes an Internet connection.}
 \end{figure}
 
 Figure 2 shows, as expected, that we did not successfully send a single packet from the time we walked within range of the WiFi network to the time we attempted to access google.com and accepted the establishment's terms and conditions. If a user were to leave his/her phone in his/her pocket - rather than checking it as impulsively as the authors - he/she may never notice that the phone has connected to unusable WiFi. In this case, the user would not receive any incoming data until he/she left the establishment.
@@ -23,7 +23,7 @@ While not tested explicitly, we believe that Bouncer could also be applied to th
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{paneraWithPolicy}
-	\caption{TODO}
+	\caption{Approaching authentication requiring WiFi with Bouncer: A) The devices detects the establishment WiFi and tears down its mobile connection as it connects to the WiFi. B) Durin this stretch the Bouncer test runs and finds it cannot access the Internet, which prompts the device to re-establish the cellular connection. Note that the mobile signal was weak prior to A and resulted in several dropped packets.}
 \end{figure}
 
 \subsection{Predictive WiFi Abandonment - The Courtyards Test}
@@ -33,17 +33,17 @@ The stock policy resulted in clinging to the WiFi network, at the perimeter of t
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{leavingCourtyardsNoPolicy}
-	\caption{TODO}
+	\caption{Departing a WiFi network without AbandonShip: A) As the user approached the perimeter of the WiFi network signal strength deteriorated resulting in a loss of connectivity. B) The device disconnected from WiFi and moved to cellular. Note that no packets were dropped at this time. C) The device attempts to reconnect to the network, even though it is too poor a signal to maintain a good connection.}
 \end{figure}
 
 When run with the Abandon Ship policy, as demonstrated by figure 5, the phone disconnects much more promptly from WiFi. It then stays on the cellular network, maintaining a stable connection. This more decisive policy does not attempt to stay connected to a WiFi network it should have given up on, resulting in better uptime.
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{leavingCourtyardsWithPolicy}
-	\caption{TODO}
+	\caption{Departing a WiFi network without AbandonShip: A) As the WiFi signal becomes poor, starting to drop packets AbandonShip decides to disconnect and the device moves on to the cellular network which is more reliable.}
 \end{figure}
 
 \begin{figure}
 	\includegraphics[width=0.5\textwidth]{bars}
-	\caption{TODO}
+	\caption{By measuring the number of dropped packets we found that AbandonShip cut the average downtime in our experiment by more than half.}
 \end{figure}
